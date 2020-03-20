@@ -1,3 +1,25 @@
-# Please fill out with content
-
 version: '3.7'
+
+services:
+
+  user-ms:
+    image: eedu/user-ms:latest
+    restart: always
+    ports:
+      - 4450:4450
+    networks:
+      - userms
+
+  db:
+    image: mariadb:latest
+    restart: always
+    environment:
+      MYSQL_DATABASE: userms
+      MYSQL_USER: userms
+      MYSQL_PASSWORD: userms
+      MYSQL_RANDOM_ROOT_PASSWORD: yes
+    networks:
+      - userms
+
+networks:
+  userms:

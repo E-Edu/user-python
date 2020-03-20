@@ -1,3 +1,11 @@
 # Please fill out with content
 
 version: '3.7'
+
+services:
+
+  user-ms:
+    image: eedu/user-ms:latest
+    restart: always
+    ports:
+      - 4450:4450

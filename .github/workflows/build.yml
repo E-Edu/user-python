@@ -5,7 +5,7 @@ on: [push, pull_request]
 jobs:
   compile:
     runs-on: ubuntu-latest
-    name: Java 11 compile
+    name: Build
     steps:
       - uses: actions/checkout@master
       - name: Setup java

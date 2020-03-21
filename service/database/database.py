@@ -123,8 +123,7 @@ class Database:
             return None
         return res[0]
 
-
-    def getTeacherTokenExisting(self, teacher_token):
+    def get_teacher_token_existing(self, teacher_token):
         self.checkConnection()
         if not self.isConnected():
             return None
@@ -133,3 +132,11 @@ class Database:
         if res is None:
             return None
         return res[0] > 0
+
+    def insert_verification_code(self, uuid, code):
+        self.checkConnection()
+        if not self.isConnected():
+            return None
+        self.execute(
+            'INSERT INTO User_Verification (´uuid´, ´verification_code´) VALUES (?, ?)',(uuid, code))
+        self.connection.commit()

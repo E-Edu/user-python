@@ -6,14 +6,16 @@ class email():
 
     def sendmail(): #send mail with Token to user
 
+        #TODO: add Token from Database to mail
+
         port = 465 # ssl port
-        password = "Kvvm83#4?92Hqqx3"   #password for login on mailserver
-        host = "ampferl.com"        #mailserver
-        sender_mail = "wirvsvirus@ampferl.com"  #address from which the mail is sent
+        password = "password"   #password for login on mailserver
+        host = "host"        #mailserver
+        sender_mail = "wirvsvirus@host.com"  #address from which the mail is sent
         receiver_mail = "receiver@mail.com"  #mail receiver
         subject = "Token for verification"  #subject of mail
-        body = open('./mail.html')
-        message = body.read()     #main body of mail
+        body = open('./mail.html')      #main body of mail
+        message = body.read()     
 
 
         msg = MIMEMultipart() #message of mail
@@ -35,11 +37,10 @@ class email():
 
 
     def verifymail(token): #check token from email for verification
-        #TODO: get dbtoken
-        dbtoken = "1234"
+
+        #TODO: open database and get token of specific user, set accountStatus to 1 in database
+
         if token == dbtoken:    #check if entered token
             accountStatus = 1
         else:
             return 200
-
-email.sendmail()

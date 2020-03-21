@@ -1,7 +1,7 @@
 # User Managment Microservice
 ## JWT 
 Response:
-```json
+```jsonc
 {
   "id": "int",
   "session_token": "string",

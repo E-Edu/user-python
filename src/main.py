@@ -15,7 +15,6 @@ def main():
 
 @app.route('/user', methods=['POST'])
 def user_register():
-    global content
     try:
         content = json.loads(request.data)
     except ValueError:

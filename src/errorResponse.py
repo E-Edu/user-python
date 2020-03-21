@@ -12,4 +12,3 @@ class ErrorResponse:
 	def set(self, error_message: str, response_code: int):
 		self.errorMessage = error_message
 		self.response_code = response_code
-

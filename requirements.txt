@@ -1,3 +1,5 @@
-smtplib, ssl, 
-from email.MIMEMultipart import MIMEMultipart
-from email.MIMEText import MIMEText
+bcrypt==3.1.7
+Flask==1.1.1
+bcrypt==3.1.7
+mysql-connector==2.2.9
+PyJWT==1.7.1

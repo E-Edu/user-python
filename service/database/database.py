@@ -1,15 +1,16 @@
 import mysql.connector as mariadb
-import os
 from service.status import *
 from service.role import *
 import uuid
+import os
 
 
-class Database():
+class Database:
 
     def __init__(self):
         self.host, self.port, self.username, self.password, self.database = os.environ["DATABASE_HOSTNAME"], str(
-            os.environ["DATABASE_PORT"]), os.environ["DATABASE_USERNAME"], os.environ["DATABASE_PASSWORD"], os.environ["DATABASE_DATABASE"]
+            os.environ["DATABASE_PORT"]), os.environ["DATABASE_USERNAME"], os.environ["DATABASE_PASSWORD"], os.environ[
+                                                                                "DATABASE_DATABASE"]
         self.connection, self.cursor = None, None
 
     def connect(self):
@@ -24,7 +25,10 @@ class Database():
             print("[DATABASE] Error: Failed to connect!")
 
     def setup(self):
-        self.execute('CREATE TABLE IF NOT EXISTS User_Users (uuid INT NOT NULL AUTO_INCREMENT, firstName VARCHAR(255), lastName VARCHAR(255), email VARCHAR(255), password VARCHAR(255), accountStatus INT, createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(), role INT, PRIMARY KEY (uuid))')
+        # TODO check path
+        setup_script = open("resources/setup.sql")
+        self.execute(setup_script.read())
+        setup_script.close()
         self.connection.commit()
 
     def isConnected(self):
@@ -42,43 +46,42 @@ class Database():
         except mariadb.Error as error:
             print("[DATABASE] Error:" + str(error))
 
-    def existUser(self, email):
+    def exist_user(self, uuid):
         self.checkConnection()
         if not self.isConnected():
             return None
-        self.execute('SELECT uuid FROM User_Users WHERE email = ?', (email,))
+        self.execute('SELECT uuid FROM User_Users WHERE uuid = ?', uuid)
         return self.cursor.fetchone() is not None
 
-    def createUser(self, firstName, lastName, email, hashedPassword, role: Role):
+    def create_user(self, email: str, firstName: str, lastName: str, password: str, status: int, role: int):
         self.checkConnection()
         if not self.isConnected():
             return None
         # TODO implement uuid
-        self.execute('INSERT INTO User_Users (uuid, firstName, lastName, email, password, accountStatus, role) VALUES (?, ?, ?, ?, ?, ?, ?)',
-                     (uuid, firstName, lastName, email, hashedPassword, 0, role.value))
-        self.connection.commit()
-
-    def deleteUser(self, userId):
-        self.checkConnection()
-        if not self.isConnected():
-            return None
-        self.execute('DELETE FROM User_Users WHERE userId = ?', (str(userId),))
-        self.connection.commit()
-
-    def getUserPassword(self, email):
-        self.checkConnection()
-        if not self.isConnected():
-            return None
         self.execute(
-            'SELECT password FROM User_Users WHERE email = ?', (email,))
+            'INSERT INTO User_Users (uuid, firstName, lastName, email, password, status, role) VALUES (?, ?, ?, ?, ?, ?, ?)',
+            (uuid, firstName, lastName, email, password, status, role))
+        self.connection.commit()
+
+    def delete_user(self, uuid):
+        self.checkConnection()
+        if not self.isConnected():
+            return None
+        self.execute('DELETE FROM User_Users WHERE uuid = ?', str(uuid))
+        self.connection.commit()
+
+    def get_user_password(self, uuid):
+        self.checkConnection()
+        if not self.isConnected():
+            return None
+        self.execute('SELECT password FROM User_Users WHERE uuid = ?', uuid)
         return self.cursor.fetchone()[0].decode("utf-8")
 
-    def getUserInfo(self, userId):
+    def get_user_info(self, uuid):
         self.checkConnection()
         if not self.isConnected():
             return None
-        self.execute('SELECT * FROM User_Users WHERE userId = ?',
-                     (str(userId),))
+        self.execute('SELECT * FROM User_Users WHERE uuid = ?', str(uuid))
         info = []
         result = self.cursor.fetchone()
         if result is None:
@@ -92,34 +95,30 @@ class Database():
         info[7] = Role(info[7])
         return info
 
-    def updateUserInfo(self, userId, firstName=None, lastName=None, email=None, hashedPassword=None, status: Status = None):
+    def update_user_info(self, uuid, firstName=None, lastName=None, email=None, hashedPassword=None,
+                         status: Status = None):
         self.checkConnection()
         if not self.isConnected():
             return None
         if firstName is not None:
-            self.execute(
-                'UPDATE User_Users SET firstName = ? WHERE userId = ?', (firstName, userId))
+            self.execute('UPDATE User_Users SET firstName = ? WHERE uuid = ?', (firstName, uuid))
         if lastName is not None:
-            self.execute(
-                'UPDATE User_Users SET lastName = ? WHERE userId = ?', (lastName, userId))
+            self.execute('UPDATE User_Users SET lastName = ? WHERE uuid = ?', (lastName, uuid))
         if email is not None:
-            self.execute(
-                'UPDATE User_Users SET email = ? WHERE userId = ?', (email, userId))
+            self.execute('UPDATE User_Users SET email = ? WHERE uuid = ?', (email, uuid))
         if hashedPassword is not None:
-            self.execute(
-                'UPDATE User_Users SET password = ? WHERE userId = ?', (hashedPassword, userId))
+            self.execute('UPDATE User_Users SET password = ? WHERE uuid = ?', (hashedPassword, uuid))
         if status is not None:
-            self.execute('UPDATE User_Users SET accountStatus = ? WHERE userId = ?',
-                         (status.value, userId))
+            self.execute('UPDATE User_Users SET accountStatus = ? WHERE uuid = ?', (status.value, uuid))
         self.connection.commit()
 
-    # returns the matching userId if existing, or None
-    def getUserIdByEmail(self, email):
+    # returns the matching uuid if existing, or None
+    def get_uuid_by_email(self, email):
         self.checkConnection()
         if not self.isConnected():
             return None
-        self.execute('SELECT uuid FROM User_Users WHERE email = ?', (email,))
+        self.execute('SELECT uuid FROM User_Users WHERE email = ?', email)
         res = self.cursor.fetchone()
-        if res == None:
+        if res is None:
             return None
         return res[0]

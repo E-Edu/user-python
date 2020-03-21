@@ -43,7 +43,7 @@ def register_user_if_valid(self, user_data: dict) -> ErrorResponse:
     else:
         role = Role.USER
 
-    add_user(User(uuid, email, password, first_name, last_name, Status.UNVERIFIED, role, None))
+    create_user(User(uuid, email, password, first_name, last_name, Status.UNVERIFIED, role, None))
 
     # code 201 = user created
     return Response("", 201)

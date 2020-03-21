@@ -99,4 +99,13 @@ Response:
     "error": "String" // only present on response codes 40x
 }
 ```
-
+## Explanations 
+### Role
+0 = Student\
+1 = Teacher\
+2 = Admin
+### Status
+0 = Unverified\
+1 = Verified\
+2 = Reported\
+3 = Banned

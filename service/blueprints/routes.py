@@ -1,5 +1,6 @@
 from flask import Blueprint, request, jsonify
 from service.usecases.signup import *
+from service.usecases.login import *
 from service import database
 from service.role import *
 
@@ -27,7 +28,14 @@ def user_register():
 # Login User
 @routes.route('/user/login', methods=['POST'])
 def user_login():
-    return 'some login magic here'
+    try:
+        content = json.loads(request.data)
+    except ValueError:
+        error = ErrorResponse("JSON expected", 400)
+        return error.get_json_value(), error.get_code()
+
+    response = login(content)
+    return response.get_json_value(), response.get_code()
 
 
 # Get User Info
@@ -36,7 +44,7 @@ def user_info():
     """
     session: JWT as string
     user: optional, mail address of other user you want to get information about
-    """
+
 
     # TODO: Verify that the request is valid (from session)
     req_body = None
@@ -76,6 +84,7 @@ def user_info():
         'priviliged_student': False,
         'report_spammer': 0
     }
+    """
 
 
 # Set User Info

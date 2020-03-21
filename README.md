@@ -25,7 +25,10 @@ Body:
     "teacher_token": "String"
 }
 ```
-Response:
+Response:\
+__Success:__\
+Status Code: `201`\
+__Error:__
 ```json
 {
     "error": "String" // only present on response codes 40x
@@ -41,7 +44,7 @@ Body:
 ```
 Response:\
 __Success:__\
-Status Code: `201`\
+Status Code: `200`\
 __Error:__
 ```json
 {

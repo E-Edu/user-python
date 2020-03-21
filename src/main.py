@@ -2,8 +2,8 @@ import json
 
 from flask import Flask, request, jsonify
 
-from src.userRegistrar import UserRegistrar
-from src.errorResponse import ErrorResponse
+from userRegistrar import UserRegistrar
+from errorResponse import ErrorResponse
 
 app = Flask(__name__)
 user_registrar = UserRegistrar()

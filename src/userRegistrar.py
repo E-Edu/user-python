@@ -33,9 +33,13 @@ class UserRegistrar:
         # code 201 = user created
         return ErrorResponse("", 201)
 
-    def _is_valid_teacher_token(self, teacher_token):
-        # TODO check if teacher_token is in teacher token db
-        pass
+    def _is_valid_teacher_token(self, teacher_token) -> bool:
+        if len(teacher_token) is not 30:
+            return False
+        elif re.search('[a-zA-Z0-9\\-]', teacher_token):
+            is_available, number_left = self.search_teacher_token(teacher_token)
+            return number_left > 0 and is_available
+        return False
 
     def _is_strong_password(self, password) -> bool:
         if len(password) < 8:
@@ -61,3 +65,7 @@ class UserRegistrar:
         elif len(email) > 64:
             return False
         return True
+
+    def search_teacher_token(self, teacher_token) -> (bool, int):
+        #return (is_available, number_left)
+        pass

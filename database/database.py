@@ -19,7 +19,7 @@ class Database():
     def setup(self):
         self.execute('CREATE TABLE IF NOT EXISTS User_Users (userId INT NOT NULL AUTO_INCREMENT, firstName VARCHAR(255), lastName VARCHAR(255), email VARCHAR(255), password VARCHAR(255), accountStatus INT, createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(), role INT, PRIMARY KEY (userId))')
         self.connection.commit()
-        
+
     def isConnected(self):
         return self.connection is not None and self.connection.is_connected()
 

@@ -4,9 +4,13 @@ from flask import Flask, request, jsonify
 
 from src.auth import hash_password, sanitize_user_input, verify_teacher, create_session, create_database_user, verify_password
 from src.errorResponse import ErrorResponse
+import database.database as db
+
 
 app = Flask(__name__)
-
+database = db.Database()
+database.connect()
+database.setup()
 
 @app.route('/')
 def main():

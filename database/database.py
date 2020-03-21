@@ -1,20 +1,9 @@
 import mysql.connector as mariadb
-from enum import Enum
 import os
-
-class Role(Enum):
-    USER = 0
-    TEACHER = 1
-    ADMIN = 2
-
-class AccountStatus(Enum):
-    UNVERIFIED = 0
-    VERIFIED = 1
-    REPORTED = 2
-    BANNED = 3
+from roles import Role
+from accountStatus import AccountStatus
 
 class Database():
-
     #def __init__(self, host, port, username, password, database):
     #    self.host, self.port, self.username, self.password, self.database = host, port, username, password, database
     #    self.connection, self.cursor = None, None

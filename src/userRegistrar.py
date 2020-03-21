@@ -1,15 +1,21 @@
 from errorResponse import ErrorResponse
+from database.database import Database
+from roles import Role
 import bcrypt
 import re
 
 
 class UserRegistrar:
+    def __init__(self):
+        self.db_wrapper = Database()
+
     def register_user_if_valid(self, user_data: dict) -> ErrorResponse:
         try:
             email = user_data["email"]
             first_name = user_data["first_name"]
             last_name = user_data["last_name"]
             password = user_data["password"]
+            role = Role.USER
         except KeyError:
             return ErrorResponse("missing key", 400)
 
@@ -18,6 +24,7 @@ class UserRegistrar:
             teacher_token = user_data["teacher_token"]
             if not self._is_valid_teacher_token(teacher_token):
                 return ErrorResponse("invalid teacher token", 400)
+            role = Role.TEACHER
 
         if not self._is_valid_email(email):
             return ErrorResponse("invalid email", 400)
@@ -28,13 +35,15 @@ class UserRegistrar:
         if not self._is_strong_password(password):
             return ErrorResponse("password too weak", 400)
 
-        # TODO add user to database
+        hashed = bcrypt.hashpw(password.encode("utf8"), bcrypt.gensalt(10))
+
+        self.db_wrapper.createUser(first_name, last_name, email, hashed, role)
 
         # code 201 = user created
         return ErrorResponse("", 201)
 
     def _is_valid_teacher_token(self, teacher_token):
-        # TODO check if teacher_token is in teacher token db
+        # TODO check if teacher_token is valid
         pass
 
     def _is_strong_password(self, password) -> bool:

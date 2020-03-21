@@ -1,10 +1,11 @@
 from errorResponse import ErrorResponse
+from database.database import Database
 import bcrypt
 
 
 class UserLoginChecker:
     def __init__(self):
-        pass
+        self.db_wrapper = Database()
 
     def user_is_valid(self, user_data: dict) -> dict:
         """
@@ -44,7 +45,7 @@ class UserLoginChecker:
 
                 try:
                     if self._is_password_matching(password, hashed):
-                        response["session"] = self._get_guid_by_email(email)
+                        response["session"] = self._get_session_id_by_email(email)
                     else:
                         error = ErrorResponse("incorrect password")
                         response.update(error.get())
@@ -60,13 +61,11 @@ class UserLoginChecker:
         return bcrypt.checkpw(password_encoded, hashed_encoded)
 
     def _get_user_existing_by_email(self, email: str) -> bool:
-        # TODO get from db
-        return False
+        return self.db_wrapper.existUser(email)
 
     def _get_password_hash_by_email(self, email: str) -> str:
-        # TODO get from db
-        return ""
+        return self.db_wrapper.getUserPassword(email)
 
-    def _get_guid_by_email(self, email: str) -> str:
-        # TODO get from db
-        return ""
+    def _get_session_id_by_email(self, email: str) -> str:
+        # TODO generate and save session id
+        return "some nice session id"

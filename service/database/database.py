@@ -45,4 +45,3 @@ class Database:  # TODO check if we can reduce function calls for isConnected an
             return self.cursor.execute(sql, values)
         except mariadb.Error as error:
             print("[DATABASE] Error:" + str(error))
-

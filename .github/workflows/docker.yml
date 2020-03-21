@@ -7,6 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Build & Docker Push
     steps:
+      - uses: actions/checkout@master
       - name: Docker Build & Push
         uses: docker/build-push-action@v1
         with:

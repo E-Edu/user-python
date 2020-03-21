@@ -4,6 +4,7 @@ from service.repository.user import *
 from service.role import *
 from service.status import *
 from uuid import uuid4
+from service.usecases.send_verify_email import send_verify_email, VerifyMailError
 import re
 
 
@@ -44,6 +45,11 @@ def register_user_if_valid(self, user_data: dict) -> ErrorResponse:
         role = Role.USER
 
     create_user(User(uuid, email, password, first_name, last_name, Status.UNVERIFIED, role, None))
+
+    try:
+        send_verify_email(email)
+    except VerifyMailError as e:
+        return Response("verification mail sending failed", 500)
 
     # code 201 = user created
     return Response("", 201)

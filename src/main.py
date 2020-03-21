@@ -51,6 +51,7 @@ def user_info():
 
     if (not 'user' in req_body) or req_body['user'] == None:
         # return information about owner of this session
+        # TODO: fetch user info from session id
         pass
     else:
         # return informatin about the provided user
@@ -59,13 +60,13 @@ def user_info():
             error = ErrorResponse('No valid user', 400)
             return jsonify(error.get_description()), error.get_code()
 
-        user_id = database.getUserIdByEmail(user_to_query)
+        user_id = database.getUserIdByEmail(user_to_query) # user exists after check above
         infos = database.getUserInfo(user_id)
 
         # TODO: privileged student + report_spammer
         return {
-            'teacher': infos[7] == database.Role.TEACHER,
-            'admin': infos[7] == database.Role.ADMIN,
+            'teacher': infos[7] == db.Role.TEACHER,
+            'admin': infos[7] == db.Role.ADMIN,
             'priviliged_student': False,
             'report_spammer': 0
         }

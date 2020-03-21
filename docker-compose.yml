@@ -10,7 +10,7 @@ services:
       MYSQL_DATABASE: userms
       MYSQL_USER: userms
       MYSQL_PASSWORD: userms
-      MYSQL_RANDOM_ROOT_PASSWORD: test
+      MYSQL_RANDOM_ROOT_PASSWORD: true
     networks:
       - userms
 

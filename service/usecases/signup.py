@@ -5,6 +5,7 @@ from service.role import *
 from service.status import *
 from uuid import uuid4
 import gvcode
+from service.usecases.send_verify_email import send_verify_email, VerifyMailError
 import re
 
 
@@ -55,9 +56,13 @@ def register_user_if_valid(self, user_data: dict) -> ErrorResponse:
     else:
         role = Role.USER
 
-    user: User = User(uuid, email, password, first_name, last_name, Status.UNVERIFIED, role, None)
-    create_user(user)
-    send_verification_email(user)
+    create_user(User(uuid, email, password, first_name, last_name, Status.UNVERIFIED, role, None))
+
+    try:
+        send_verify_email(email)
+    except VerifyMailError as e:
+        return Response("verification mail sending failed", 500)
+
     # code 201 = user created
     return Response("", 201)
 

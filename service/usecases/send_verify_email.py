@@ -1,7 +1,16 @@
 import smtplib, ssl
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+from flask import render_template_string
 import os
+
+class VerifyMailError(Exception):
+    def __init__(self, cause):
+        self.cause = cause
+    
+    def __str__(self):
+        return f'VerifyMailError: {self.cause}'
+
 
 def send_verify_email(email):  # send mail with Token to user
 
@@ -15,6 +24,10 @@ def send_verify_email(email):  # send mail with Token to user
     subject = "Verify Email"
     body = open('resources/verify_email_template.html')  # TODO check path
     message = body.read()
+
+    # TODO wohin führt die verify url aus der mail?
+    verify_url = ''
+    message = render_template_string(message, verify_url=verify_url)
 
     msg = MIMEMultipart()  # message of mail
     msg["From"] = sender_mail

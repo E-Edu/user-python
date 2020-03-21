@@ -1,4 +1,4 @@
-from src.errorResponse import ErrorResponse
+from errorResponse import ErrorResponse
 import bcrypt
 import re
 

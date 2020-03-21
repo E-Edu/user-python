@@ -20,7 +20,6 @@ def main():
 
 @app.route('/user', methods=['POST'])
 def user_register():
-    global content
     try:
         content = json.loads(request.data)
     except ValueError:
@@ -52,4 +51,4 @@ def user_session():
 
 
 if __name__ == '__main__':
-    app.run(port=4450, threaded=True)
+    app.run(threaded=True)

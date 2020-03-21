@@ -11,4 +11,3 @@ def valid_email(email):
     if re.match(r"[^@]+@[^@]+\.[^@]+", email) is None:
         return False
     return True
-

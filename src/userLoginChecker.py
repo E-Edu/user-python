@@ -57,10 +57,5 @@ class UserLoginChecker:
         return ""
 
     def _get_guid_by_email(self, email: str) -> str:
-        # TODO generate from email&pw hash&server secret
+        # TODO get from db
         return ""
-
-
-if __name__ == "__main__":
-    checker = UserLoginChecker()
-    checker.user_is_valid()

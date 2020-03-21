@@ -1,7 +1,10 @@
 from flask import Blueprint, request, jsonify
-from service.response import *
+from service.usecases.signup import *
+from service import database
+from service.role import *
 
 routes = Blueprint('routes', __name__)
+
 
 @routes.route('/')
 def main():
@@ -17,7 +20,7 @@ def user_register():
         error = ErrorResponse("JSON expected", 400)
         return error.get_json_value(), error.get_code()
 
-    response = user_registrar.register_user_if_valid(content)
+    response = signup(content)
     return response.get_json_value(), response.get_code()
 
 
@@ -36,8 +39,6 @@ def user_info():
     """
 
     # TODO: Verify that the request is valid (from session)
-
-    global database
     req_body = None
 
     try:
@@ -56,7 +57,7 @@ def user_info():
         # return information about owner of this session
         # TODO: where in the JWT is the id stored?
         token_payload = jwt.decode(req_body.session)
-        user_id_to_query = token_payload['id'] # TODO put here the correct field name
+        user_id_to_query = token_payload['id']  # TODO put here the correct field name
     else:
         # return informatin about the provided user
         user_to_query = req_body['user']
@@ -70,8 +71,8 @@ def user_info():
 
     # TODO: privileged student + report_spammer
     return {
-        'teacher': infos[7] == db.Role.TEACHER,
-        'admin': infos[7] == db.Role.ADMIN,
+        'teacher': infos[7] == Role.TEACHER,
+        'admin': infos[7] == Role.ADMIN,
         'priviliged_student': False,
         'report_spammer': 0
     }

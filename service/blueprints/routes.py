@@ -11,6 +11,7 @@ def main():
     return 'Team User-Microservice'
 
 
+# Create User
 @routes.route('/user', methods=['POST'])
 def user_register():
     try:
@@ -23,12 +24,14 @@ def user_register():
     return response.get_json_value(), response.get_code()
 
 
+# Login User
 @routes.route('/user/login', methods=['POST'])
 def user_login():
     return 'some login magic here'
 
 
-@routes.route('/user/info', methods=['POST'])
+# Get User Info
+@routes.route('/user/<uuid>/info', methods=['GET']) # TODO not REST compliant
 def user_info():
     """
     session: JWT as string
@@ -75,12 +78,22 @@ def user_info():
     }
 
 
-@routes.route('/user', methods=['PUT'])
+# Set User Info
+@routes.route('/user', methods=['PUT']) # TODO not REST compliant
 def user_update():
     return 'and update responses here'
 
 
+# Verify Email
 @routes.route('/user/verify', methods=['PATCH'])
 def user_session():
+    return 'or some email checks there'
+
+
+# Check User Session
+@routes.route('/user/session', methods=['POST'])
+def user_session():
     return 'or some session checks there'
+
+
 

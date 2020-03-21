@@ -1,4 +1,8 @@
-from flask import Blueprint, request, jsonify
+import jwt
+from flask import Blueprint, request, jsonify, json
+
+from service.response import ErrorResponse
+from service.usecases.signup import _is_valid_email
 
 routes = Blueprint('routes', __name__)
 
@@ -40,11 +44,11 @@ def user_info():
         req_body = json.loads(request.data)
     except ValueError:
         error = ErrorResponse('JSON expected', 400)
-        return jsonify(error.get_description()), error.get_code()
+        return jsonify(error.get_value()), error.get_code()
 
     if not 'session' in req_body:
         error = ErrorResponse('No session provided', 400)
-        return jsonify(error.get_description()), error.get_code()
+        return jsonify(error.get_value()), error.get_code()
 
     user_id_to_query = None
     # switch based on wheather the user was provided
@@ -56,9 +60,9 @@ def user_info():
     else:
         # return informatin about the provided user
         user_to_query = req_body['user']
-        if not user_registrar._is_valid_email(user_to_query) or not database.existsUser(user_to_query):
+        if not _is_valid_email(user_to_query) or not database.existsUser(user_to_query):
             error = ErrorResponse('No valid user', 400)
-            return jsonify(error.get_description()), error.get_code()
+            return jsonify(error.get_value()), error.get_code()
 
         user_id_to_query = database.getUserIdByEmail(user_to_query) # user exists after check above
 

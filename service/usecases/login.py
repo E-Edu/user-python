@@ -31,7 +31,7 @@ def user_is_valid(user_data: dict) -> dict:
         password = user_data["password"]
     except KeyError:
         error = ErrorResponse("json key not found")
-        response.update(error.get())
+        response.update(error.get_value())
 
     else:
         if _get_user_existing_by_email(email):
@@ -42,10 +42,10 @@ def user_is_valid(user_data: dict) -> dict:
                     response["session"] = _get_guid_by_email(email)
                 else:
                     error = ErrorResponse("incorrect password")
-                    response.update(error.get())
+                    response.update(error.get_value())
             except ValueError:  # raised by bcrypt if hash is invalid
                 error = ErrorResponse("invalid hash from database")
-                response.update(error.get())
+                response.update(error.get_value()())
 
     return response
 

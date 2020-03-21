@@ -2,11 +2,16 @@ import json
 
 from flask import Flask, request, jsonify
 
-from userRegistrar import UserRegistrar
 from errorResponse import ErrorResponse
+from userRegistrar import UserRegistrar
+import database.database as db
+
 
 app = Flask(__name__)
 user_registrar = UserRegistrar()
+database = db.Database()
+database.connect()
+database.setup()
 
 @app.route('/')
 def main():

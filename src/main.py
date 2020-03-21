@@ -13,7 +13,7 @@ def main():
     return 'Team User-Microservice'
 
 
-@app.route('/user/register', methods=['POST'])
+@app.route('/user', methods=['POST'])
 def user_register():
     global content
     try:
@@ -26,11 +26,6 @@ def user_register():
     return response.get_description(), response.get_code()
 
 
-@app.route('/user/verify', methods=['PATCH'])
-def user_verify():
-    return 'and some verify stuff here'
-
-
 @app.route('/user/login', methods=['POST'])
 def user_login():
     return 'some login magic here'
@@ -41,12 +36,12 @@ def user_info():
     return 'info responses here'
 
 
-@app.route('/user/update', methods=['PUT'])
+@app.route('/user', methods=['PUT'])
 def user_update():
     return 'and update responses here'
 
 
-@app.route('/user/session', methods=['POST'])
+@app.route('/user/verify', methods=['PATCH'])
 def user_session():
     return 'or some session checks there'
 

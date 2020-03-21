@@ -15,13 +15,13 @@ class UserLoginChecker:
             email = user_data["email"]
             password = user_data["password"]
         except KeyError:
-            response["error"] = "invalid keys"
+            response["error"] = "json key not found"
         else:
             hashed = self._get_password_hash_by_email(email)
             if self._is_password_matching(password, hashed):
                 response["Guid"] = self._get_guid_from(email, hashed)
             else:
-                response["error"] = "user not found"
+                response["error"] = "wrong password"
 
         return response
 
@@ -38,6 +38,3 @@ class UserLoginChecker:
         # TODO generate from email&pw hash&server secret
         return ""
 
-
-if __name__ == "__main__":
-    checker = UserLoginChecker()

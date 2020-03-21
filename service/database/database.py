@@ -1,6 +1,7 @@
 import mysql.connector as mariadb
 import os
-from database import accountStatus, role
+from service.status import *
+from service.role import *
 import uuid
 
 
@@ -48,7 +49,7 @@ class Database():
         self.execute('SELECT uuid FROM User_Users WHERE email = ?', (email,))
         return self.cursor.fetchone() is not None
 
-    def createUser(self, firstName, lastName, email, hashedPassword, role: role.Role):
+    def createUser(self, firstName, lastName, email, hashedPassword, role: Role):
         self.checkConnection()
         if not self.isConnected():
             return None
@@ -87,11 +88,11 @@ class Database():
                 info.append(row.decode("utf-8"))
             else:
                 info.append(row)
-        info[5] = accountStatus.AccountStatus(info[5])
-        info[7] = role.Role(info[7])
+        info[5] = Status(info[5])
+        info[7] = Role(info[7])
         return info
 
-    def updateUserInfo(self, userId, firstName=None, lastName=None, email=None, hashedPassword=None, accountStatus: accountStatus.AccountStatus = None):
+    def updateUserInfo(self, userId, firstName=None, lastName=None, email=None, hashedPassword=None, status: Status = None):
         self.checkConnection()
         if not self.isConnected():
             return None
@@ -107,9 +108,9 @@ class Database():
         if hashedPassword is not None:
             self.execute(
                 'UPDATE User_Users SET password = ? WHERE userId = ?', (hashedPassword, userId))
-        if accountStatus is not None:
+        if status is not None:
             self.execute('UPDATE User_Users SET accountStatus = ? WHERE userId = ?',
-                         (accountStatus.value, userId))
+                         (status.value, userId))
         self.connection.commit()
 
     # returns the matching userId if existing, or None

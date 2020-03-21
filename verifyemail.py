@@ -10,7 +10,7 @@ class email():
         password = "Kvvm83#4?92Hqqx3"   #password for login on mailserver
         host = "ampferl.com"        #mailserver
         sender_mail = "wirvsvirus@ampferl.com"  #address from which the mail is sent
-        receiver_mail = "lasse-knauff@t-online.de"  #mail receiver
+        receiver_mail = "receiver@mail.com"  #mail receiver
         subject = "Token for verification"  #subject of mail
         body = open('./mail.html')
         message = body.read()     #main body of mail

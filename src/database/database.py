@@ -1,6 +1,7 @@
 import mysql.connector as mariadb
 import os
 from database import accountStatus, role
+import uuid
 
 
 class Database():
@@ -22,7 +23,7 @@ class Database():
             print("[DATABASE] Error: Failed to connect!")
 
     def setup(self):
-        self.execute('CREATE TABLE IF NOT EXISTS User_Users (userId INT NOT NULL AUTO_INCREMENT, firstName VARCHAR(255), lastName VARCHAR(255), email VARCHAR(255), password VARCHAR(255), accountStatus INT, createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(), role INT, PRIMARY KEY (userId))')
+        self.execute('CREATE TABLE IF NOT EXISTS User_Users (uuid INT NOT NULL AUTO_INCREMENT, firstName VARCHAR(255), lastName VARCHAR(255), email VARCHAR(255), password VARCHAR(255), accountStatus INT, createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(), role INT, PRIMARY KEY (uuid))')
         self.connection.commit()
 
     def isConnected(self):
@@ -44,15 +45,16 @@ class Database():
         self.checkConnection()
         if not self.isConnected():
             return None
-        self.execute('SELECT userId FROM User_Users WHERE email = ?', (email,))
+        self.execute('SELECT uuid FROM User_Users WHERE email = ?', (email,))
         return self.cursor.fetchone() is not None
 
     def createUser(self, firstName, lastName, email, hashedPassword, role: role.Role):
         self.checkConnection()
         if not self.isConnected():
             return None
-        self.execute('INSERT INTO User_Users (firstName, lastName, email, password, accountStatus, role) VALUES (?, ?, ?, ?, ?, ?)',
-                     (firstName, lastName, email, hashedPassword, 0, role.value))
+        # TODO implement uuid
+        self.execute('INSERT INTO User_Users (uuid, firstName, lastName, email, password, accountStatus, role) VALUES (?, ?, ?, ?, ?, ?, ?)',
+                     (uuid, firstName, lastName, email, hashedPassword, 0, role.value))
         self.connection.commit()
 
     def deleteUser(self, userId):
@@ -115,7 +117,7 @@ class Database():
         self.checkConnection()
         if not self.isConnected():
             return None
-        self.execute('SELECT userId FROM User_Users WHERE email = ?', (email,))
+        self.execute('SELECT uuid FROM User_Users WHERE email = ?', (email,))
         res = self.cursor.fetchone()
         if res == None:
             return None

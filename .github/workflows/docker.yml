@@ -1,0 +1,16 @@
+name: Docker Build
+
+on: [push]
+
+jobs:
+  compile:
+    runs-on: ubuntu-latest
+    name: Build & Docker Push
+    steps:
+      - name: Docker Build & Push
+        uses: docker/build-push-action@v1
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          repository: eedu/reportms
+          tags: latest

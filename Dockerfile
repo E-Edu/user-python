@@ -3,7 +3,7 @@ COPY . /microservice/
 WORKDIR /microservice/
 RUN pip install --upgrade pip
 
-RUN apk add --update libxml2-dev libxslt-dev gcc g++ bash vim nano
+RUN apk add --update libxml2-dev libxslt-dev gcc g++ bash
 RUN pip install -r requirements.txt
 ENTRYPOINT ["python"]
 CMD ["src/main.py"]

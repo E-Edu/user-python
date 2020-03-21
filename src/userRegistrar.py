@@ -1,7 +1,6 @@
 from errorResponse import ErrorResponse
-import bcrypt
+from database import Database as db
 import re
-
 
 class UserRegistrar:
     def register_user_if_valid(self, user_data: dict) -> ErrorResponse:
@@ -34,11 +33,10 @@ class UserRegistrar:
         return ErrorResponse("", 201)
 
     def _is_valid_teacher_token(self, teacher_token) -> bool:
-        if len(teacher_token) is not 30:
+        if len(teacher_token) is not 32:
             return False
         elif re.search('[a-zA-Z0-9\\-]', teacher_token):
-            is_available, number_left = self.search_teacher_token(teacher_token)
-            return number_left > 0 and is_available
+            return db.Database.search_teacher_token(teacher_token)
         return False
 
     def _is_strong_password(self, password) -> bool:
@@ -65,7 +63,3 @@ class UserRegistrar:
         elif len(email) > 64:
             return False
         return True
-
-    def search_teacher_token(self, teacher_token) -> (bool, int):
-        #return (is_available, number_left)
-        pass

@@ -98,5 +98,12 @@ class Database():
     def getUserIdByEmail(self, email):
         self.checkConnection()
         if not self.isConnected(): return None
-        self.execute('SELECT userId FROM Users WHERE email = ?', (email,))
+        self.execute('SELECT userId FROM Users WHERE email = ?', email)
         return self.cursor.fetchone()[0]
+
+    def search_teacher_token(self, teacher_token):
+        self.checkConnection()
+        if not self.isConnected(): return None
+        self.execute('SELECT COUNT(token) FROM TeacherToken WHERE token = ?', teacher_token)
+        return self.cursor.fetchone()[0] > 0
+

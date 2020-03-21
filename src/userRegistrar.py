@@ -2,6 +2,7 @@ from response import *
 from database import database as db
 import re
 
+
 class UserRegistrar:
     def register_user_if_valid(self, user_data: dict) -> ErrorResponse:
         try:

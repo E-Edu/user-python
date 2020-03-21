@@ -1,4 +1,16 @@
 # User Managment Microservice
+## JWT 
+Response:
+```json
+{
+  "id": "int",
+  "email": "string",
+  "first_name": "string",
+  "last_name": "string",
+  "role": "int",
+  "status": "int"
+}
+```
 ## REST API Endpoints
 ### Register User
 **[POST] /user/register**\

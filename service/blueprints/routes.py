@@ -1,7 +1,9 @@
 from flask import Blueprint, request, jsonify
 from service.usecases.signup import *
 from service.usecases.login import *
+from service.usecases.verify_email import *
 from service.usecases.info import *
+from service.transfer.input import *
 from service.usecases.verify_session import *
 from service import database
 from service.role import *
@@ -23,7 +25,7 @@ def user_register():
         error = ErrorResponse("JSON expected", 400)
         return error.get_json_value(), error.get_code()
 
-    response = signup(content)
+    response = signup(Signup(content))
     return response.get_json_value(), response.get_code()
 
 
@@ -36,19 +38,14 @@ def user_login():
         error = ErrorResponse("JSON expected", 400)
         return error.get_json_value(), error.get_code()
 
-    response = login(content)
+    response = login(Login(content))
     return response.get_json_value(), response.get_code()
 
 
 # Get User Info
-@routes.route('/user/<uuid>/info', methods=['GET']) # TODO not REST compliant
-def user_info():
-    try:
-        req_body = json.loads(request.data)
-    except ValueError:
-        error = ErrorResponse('JSON expected', 400)
-        return jsonify(error.get_description()), error.get_code()
-    response = info(req_body)
+@routes.route('/user/<uuid>/info', methods=['GET'])  # TODO not REST compliant
+def user_info(uuid):
+    response = info(uuid)
     return response.get_json_value(), response.get_code()
 
 
@@ -60,8 +57,14 @@ def user_update():
 
 # Verify Email
 @routes.route('/user/verify', methods=['PATCH'])
-def user_session():
-    return 'or some email checks there'
+def user_verify_email():
+    try:
+        req_body = json.loads(request.data)
+    except ValueError:
+        error = ErrorResponse('JSON expected', 400)
+        return jsonify(error.get_description()), error.get_code()
+    response = verify_email(VerifyEmail(req_body))
+    return response.get_json_value(), response.get_code()
 
 
 # Check User Session
@@ -72,5 +75,5 @@ def user_session():
     except ValueError:
         error = ErrorResponse('JSON expected', 400)
         return jsonify(error.get_description()), error.get_code()
-    response = verify_session(req_body)
+    response = verify_session(Session(req_body))
     return response.get_json_value(), response.get_code()

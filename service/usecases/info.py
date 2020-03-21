@@ -1,10 +1,10 @@
-from service.transfer.out import *
+from service.transfer.output import *
 from service.repository.user import *
+from service.error.error import *
 
 
 def info(user_uuid):
     user = get_user(user_uuid)
-    error = None
     if user is None:
-        error = "User not found"
-    return User(user, error)
+        return Error("User not found")
+    return User(user)

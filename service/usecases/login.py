@@ -1,21 +1,17 @@
 from service.response import *
 from service.repository.user import *
+from service.error.error import *
 from service.util.jwt import *
+from service.transfer.input import Login as LoginIn
+from service.transfer.output import Login as LoginOut
 import bcrypt
 
 
-def login(user_data: dict) -> dict:
+def login(data: LoginIn) -> dict:
 
-    try:
-        email = user_data["email"]
-        password = user_data["password"]
-    except KeyError:
-        error = ErrorResponse("json key not found", 404)
-        return error.get_json_value(), error.get_code()
+    user = get_user_by_email(data.email)
 
-    user = get_user_by_email(email)
-
-    if __is_password_matching(password, user.password):
+    if __is_password_matching(data.password, user.password):
         payload = {
               "uuid": user.uuid,
               "email": user.email,
@@ -25,10 +21,9 @@ def login(user_data: dict) -> dict:
               "status": user.status
             }
         jwt_token = jwt_encode(payload)
-        return Response({"session": jwt_token}, 200)
+        return LoginOut(jwt_token)
 
-    error = ErrorResponse("wrong username or password", 404)
-    return error.get_json_value(), error.get_code()
+    return Error("Wrong username or password")
 
 
 def __is_password_matching(password: str, hashed: str) -> bool:

@@ -56,5 +56,10 @@ def user_update():
     return 'and update responses here'
 
 
+@app.route('/user/session', methods=['POST'])
+def user_session():
+    return 'or some session checks there'
+
+
 if __name__ == '__main__':
     app.run(port=4450, threaded=True)

@@ -1,13 +1,14 @@
 from service.response import *
 from service.repository.teacher import *
 from service.repository.user import *
+from service.usecases.send_verify_email import *
 from service.role import *
 from service.status import *
 from uuid import uuid4
 import re
 
 
-def register_user_if_valid(self, user_data: dict) -> ErrorResponse:
+def signup(user_data: dict) -> ErrorResponse:
     try:
         email = user_data["email"]
         first_name = user_data["first_name"]
@@ -24,13 +25,13 @@ def register_user_if_valid(self, user_data: dict) -> ErrorResponse:
             return ErrorResponse("invalid teacher token", 400)
         is_teacher = True
 
-    if not self._is_valid_email(email):
+    if not _is_valid_email(email):
         return ErrorResponse("invalid email", 400)
-    if not self._is_valid_name(first_name):
+    if not _is_valid_name(first_name):
         return ErrorResponse("invalid first name", 400)
-    if not self._is_valid_name(last_name):
+    if not _is_valid_name(last_name):
         return ErrorResponse("invalid last name", 400)
-    if not self._is_strong_password(password):
+    if not _is_strong_password(password):
         return ErrorResponse("password too weak", 400)
 
     uuid = uuid4()
@@ -42,10 +43,14 @@ def register_user_if_valid(self, user_data: dict) -> ErrorResponse:
         role = Role.TEACHER
     else:
         role = Role.USER
+    user = User(uuid, email, password, first_name, last_name, Status.UNVERIFIED, role, None)
+    create_user(user)
 
-    create_user(User(uuid, email, password, first_name, last_name, Status.UNVERIFIED, role, None))
+    send_verify_email(email)
 
-    # code 201 = user created
+    if is_teacher:
+        asign_teacher_token_to_user(user, teacher_token)
+
     return Response("", 201)
 
 
@@ -53,7 +58,7 @@ def _is_valid_teacher_token(teacher_token) -> bool:
     if len(teacher_token) != 32:
         return False
     elif re.search('[a-zA-Z0-9\\-]', teacher_token):
-        return search_teacher_token(teacher_token)
+        return search_teacher_token(teacher_token) # TODO Teacher Repository
     return False
 
 

@@ -3,7 +3,8 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import os
 
-def send_verify_email(email):  # send mail with Token to user
+
+def send_verify_email(email):
 
     # TODO: add Token from Database to mail
 
@@ -31,4 +32,3 @@ def send_verify_email(email):  # send mail with Token to user
     server.sendmail(sender_mail, receiver_mail, msg.as_string())
     print("Mail sent!")
     server.close()
-

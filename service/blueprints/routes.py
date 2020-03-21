@@ -1,4 +1,5 @@
 from flask import Blueprint, request, jsonify
+from service.usecases.signup import *
 
 routes = Blueprint('routes', __name__)
 
@@ -15,7 +16,7 @@ def user_register():
         error = ErrorResponse("JSON expected", 400)
         return error.get_json_value(), error.get_code()
 
-    response = user_registrar.register_user_if_valid(content)
+    response = signup(content)
     return response.get_json_value(), response.get_code()
 
 

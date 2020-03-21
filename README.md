@@ -1,4 +1,17 @@
 # User Managment Microservice
+## JWT 
+Response:
+```json
+{
+  "id": "int",
+  "session_token": "string",
+  "email": "string",
+  "first_name": "string",
+  "last_name": "string",
+  "role": "int",
+  "status": "int"
+}
+```
 ## REST API Endpoints
 ### Register User
 **[POST] /user/register**\
@@ -26,7 +39,10 @@ Body:
     "token": "String"
 }
 ```
-Response:
+Response:\
+__Success:__\
+Status Code: `201`\
+__Error:__
 ```json
 {
     "error": "String", // only present on response codes 40x
@@ -42,7 +58,10 @@ Body:
     "password": "String"
 }
 ```
-Response:
+Response:\
+__Success:__\
+Status Code: `200`\
+__Error:__
 ```json
 {
     "error": "String", // only present on response codes 40x
@@ -58,14 +77,21 @@ Body:
     "user": "Guid|null"
 }
 ```
-Response:
+Response:\
+__Success:__\
+Status Code: `200`\
 ```json
 {
-    "error": "String", // only present on response codes 40x
     "teacher": "Boolean",
     "admin": "Boolean",
     "privileged_student": "Boolean",
     "report_spammer": "Number"
+}
+```
+__Error:__
+```json
+{
+    "error": "String" // only present on response codes 40x
 }
 ```
 ### Update User
@@ -81,10 +107,39 @@ Body:
     "report_spammer": "Boolean|null"
 }
 ```
-Response:
+Response:\
+__Success:__\
+Status Code: `200`\
+__Error:__
 ```json
 {
     "error": "String" // only present on response codes 40x
 }
 ```
-
+### User Session
+**[POST] /user/session**\
+Body:
+```json
+{
+    "session_token": "string"
+}
+```
+Response:\
+__Success:__\
+Status Code: `200`\
+__Error:__
+```json
+{
+    "error": "String" // only present on response codes 40x
+}
+```
+## Explanations 
+### Role
+0 = Student\
+1 = Teacher\
+2 = Admin
+### Status
+0 = Unverified\
+1 = Verified\
+2 = Reported\
+3 = Banned

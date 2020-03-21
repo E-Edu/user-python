@@ -1,6 +1,7 @@
 from enum import Enum
 
-class AccountStatus(Enum):
+
+class Status(Enum):
     UNVERIFIED = 0
     VERIFIED = 1
     REPORTED = 2

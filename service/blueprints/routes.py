@@ -1,25 +1,13 @@
-import json
+from flask import Blueprint, request, jsonify
 
-from flask import Flask, request, jsonify
+routes = Blueprint('routes', __name__)
 
-from response import *
-from userRegistrar import UserRegistrar
-import database.database as db
-import jwt
-
-
-app = Flask(__name__)
-user_registrar = UserRegistrar()
-database = db.Database()
-database.connect()
-database.setup()
-
-@app.route('/')
+@routes.route('/')
 def main():
     return 'Team User-Microservice'
 
 
-@app.route('/user', methods=['POST'])
+@routes.route('/user', methods=['POST'])
 def user_register():
     try:
         content = json.loads(request.data)
@@ -31,12 +19,12 @@ def user_register():
     return response.get_json_value(), response.get_code()
 
 
-@app.route('/user/login', methods=['POST'])
+@routes.route('/user/login', methods=['POST'])
 def user_login():
     return 'some login magic here'
 
 
-@app.route('/user/info', methods=['POST'])
+@routes.route('/user/info', methods=['POST'])
 def user_info():
     """
     session: JWT as string
@@ -73,7 +61,7 @@ def user_info():
             return jsonify(error.get_description()), error.get_code()
 
         user_id_to_query = database.getUserIdByEmail(user_to_query) # user exists after check above
-    
+
     infos = database.getUserInfo(user_id)
 
     # TODO: privileged student + report_spammer
@@ -85,15 +73,12 @@ def user_info():
     }
 
 
-@app.route('/user', methods=['PUT'])
+@routes.route('/user', methods=['PUT'])
 def user_update():
     return 'and update responses here'
 
 
-@app.route('/user/verify', methods=['PATCH'])
+@routes.route('/user/verify', methods=['PATCH'])
 def user_session():
     return 'or some session checks there'
 
-
-if __name__ == '__main__':
-    app.run(threaded=True)

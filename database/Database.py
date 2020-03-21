@@ -1,5 +1,6 @@
 import mysql.connector as mariadb
 from enum import Enum
+import os
 
 class Role(Enum):
     USER = 0
@@ -14,8 +15,12 @@ class AccountStatus(Enum):
 
 class Database():
 
-    def __init__(self, host, port, username, password, database):
-        self.host, self.port, self.username, self.password, self.database = host, port, username, password, database
+    #def __init__(self, host, port, username, password, database):
+    #    self.host, self.port, self.username, self.password, self.database = host, port, username, password, database
+    #    self.connection, self.cursor = None, None
+
+    def __int__(self):
+        self.host, self.port, self.username, self.password, self.database = "localhost", "3306", os.environ["MYSQL_USER"], os.environ["MYSQL_PASSWORD"], os.environ["MYSQL_RANDOM_ROOT_PASSWORD"]
         self.connection, self.cursor = None, None
 
     def connect(self):

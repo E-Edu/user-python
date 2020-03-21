@@ -2,6 +2,7 @@ import mysql.connector as mariadb
 import os
 from database import accountStatus, role
 
+
 class Database():
 
     def __init__(self):

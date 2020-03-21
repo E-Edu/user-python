@@ -2,9 +2,9 @@ import json
 
 from flask import Flask, request, jsonify
 
-from errorResponse import ErrorResponse
+from response import *
 from userRegistrar import UserRegistrar
-import database.database as db
+from database import database as db
 
 
 app = Flask(__name__)
@@ -25,10 +25,10 @@ def user_register():
         content = json.loads(request.data)
     except ValueError:
         error = ErrorResponse("JSON expected", 400)
-        return jsonify(error.get_description()), error.get_code()
+        return error.get_json_value(), error.get_code()
 
     response = user_registrar.register_user_if_valid(content)
-    return response.get_description(), response.get_code()
+    return response.get_json_value(), response.get_code()
 
 
 @app.route('/user/verify', methods=['PATCH'])

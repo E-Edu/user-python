@@ -2,6 +2,7 @@ from flask import Blueprint, request, jsonify
 from service.usecases.signup import *
 from service.usecases.login import *
 from service.usecases.info import *
+from service.usecases.verify_session import *
 from service import database
 from service.role import *
 
@@ -51,9 +52,8 @@ def user_info():
     return response.get_json_value(), response.get_code()
 
 
-
 # Set User Info
-@routes.route('/user', methods=['PUT']) # TODO not REST compliant
+@routes.route('/user', methods=['PUT'])  # TODO not REST compliant
 def user_update():
     return 'and update responses here'
 
@@ -67,7 +67,10 @@ def user_session():
 # Check User Session
 @routes.route('/user/session', methods=['POST'])
 def user_session():
-    return 'or some session checks there'
-
-
-
+    try:
+        req_body = json.loads(request.data)
+    except ValueError:
+        error = ErrorResponse('JSON expected', 400)
+        return jsonify(error.get_description()), error.get_code()
+    response = verify_session(req_body)
+    return response.get_json_value(), response.get_code()

@@ -4,7 +4,19 @@ from service.repository.user import *
 from service.role import *
 from service.status import *
 from uuid import uuid4
+import gvcode
 import re
+
+
+def generate_verification_code():
+    image = gvcode.generate()
+    base64 = gvcode.base64()
+
+
+def send_verification_email(user):
+    code = generate_verification_code()
+    database.insert_verification_code(user.uuid, code)
+    #TODO: send Email
 
 
 def register_user_if_valid(self, user_data: dict) -> ErrorResponse:
@@ -43,8 +55,9 @@ def register_user_if_valid(self, user_data: dict) -> ErrorResponse:
     else:
         role = Role.USER
 
-    create_user(User(uuid, email, password, first_name, last_name, Status.UNVERIFIED, role, None))
-
+    user: User = User(uuid, email, password, first_name, last_name, Status.UNVERIFIED, role, None)
+    create_user(user)
+    send_verification_email(user)
     # code 201 = user created
     return Response("", 201)
 

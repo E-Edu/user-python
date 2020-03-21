@@ -122,3 +122,14 @@ class Database:
         if res is None:
             return None
         return res[0]
+
+
+    def getTeacherTokenExisting(self, teacher_token):
+        self.checkConnection()
+        if not self.isConnected():
+            return None
+        self.execute('SELECT COUNT(token) FROM User_Teacher WHERE token = ?', teacher_token)
+        res = self.cursor.fetchone()
+        if res is None:
+            return None
+        return res[0] > 0

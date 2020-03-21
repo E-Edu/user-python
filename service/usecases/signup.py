@@ -20,7 +20,7 @@ def register_user_if_valid(self, user_data: dict) -> ErrorResponse:
     # key only exists if user wants to register as teacher
     if "teacher_token" in user_data.keys():
         teacher_token = user_data["teacher_token"]
-        if not self._is_valid_teacher_token(teacher_token):
+        if not _is_valid_teacher_token(teacher_token):
             return ErrorResponse("invalid teacher token", 400)
         is_teacher = True
 
@@ -49,8 +49,8 @@ def register_user_if_valid(self, user_data: dict) -> ErrorResponse:
     return Response("", 201)
 
 
-def _is_valid_teacher_token(self, teacher_token) -> bool:
-    if len(teacher_token) is not 32:
+def _is_valid_teacher_token(teacher_token) -> bool:
+    if len(teacher_token) != 32:
         return False
     elif re.search('[a-zA-Z0-9\\-]', teacher_token):
         return search_teacher_token(teacher_token)

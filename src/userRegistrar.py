@@ -1,5 +1,5 @@
-from errorResponse import ErrorResponse
-from database import Database as db
+from response import *
+from database import database as db
 import re
 
 class UserRegistrar:
@@ -30,7 +30,7 @@ class UserRegistrar:
         # TODO add user to database
 
         # code 201 = user created
-        return ErrorResponse("", 201)
+        return Response("", 201)
 
     def _is_valid_teacher_token(self, teacher_token) -> bool:
         if len(teacher_token) is not 32:

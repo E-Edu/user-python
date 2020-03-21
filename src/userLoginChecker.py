@@ -1,4 +1,4 @@
-from errorResponse import ErrorResponse
+from response import *
 import bcrypt
 
 

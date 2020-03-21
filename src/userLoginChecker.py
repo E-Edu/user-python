@@ -1,3 +1,4 @@
+from errorResponse import ErrorResponse
 import bcrypt
 
 
@@ -6,22 +7,43 @@ class UserLoginChecker:
         pass
 
     def user_is_valid(self, user_data: dict) -> dict:
+        """
+        takes:
+        {
+        'email': str,
+        'password': str
+        }
+
+        checks if:
+        - input keys are existing
+        - user exists
+        - password correct
+
+        then returns as dict:
+        {
+        'error': str,
+        'session': str
+        }
+        """
+
         response = {
             "error": "",
-            "Guid": None
+            "session": None
         }
 
         try:
             email = user_data["email"]
             password = user_data["password"]
         except KeyError:
-            response["error"] = "json key not found"
+            error = ErrorResponse("json key not found")
+            response = response.update(error.get())
         else:
             hashed = self._get_password_hash_by_email(email)
             if self._is_password_matching(password, hashed):
-                response["Guid"] = self._get_guid_from(email, hashed)
+                response["session"] = self._get_guid_by_email(email)
             else:
-                response["error"] = "wrong password"
+                error = ErrorResponse("incorrect password")
+                response = response.update(error.get())
 
         return response
 
@@ -34,7 +56,11 @@ class UserLoginChecker:
         # TODO get from db
         return ""
 
-    def _get_guid_from(self, email: str, hashed: str) -> str:
+    def _get_guid_by_email(self, email: str) -> str:
         # TODO generate from email&pw hash&server secret
         return ""
 
+
+if __name__ == "__main__":
+    checker = UserLoginChecker()
+    checker.user_is_valid()

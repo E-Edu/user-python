@@ -1,4 +1,10 @@
-from flask import Flask
+import json
+
+from flask import Flask, request, jsonify
+
+from src.auth import hash_password, sanitize_user_input, verify_teacher, create_session, create_database_user, verify_password
+from src.errorResponse import ErrorResponse
+
 app = Flask(__name__)
 
 
@@ -9,7 +15,25 @@ def main():
 
 @app.route('/user/register', methods=['POST'])
 def user_register():
-    return 'some register shit here'
+    global content
+    try:
+        content = json.loads(request.data)
+    except ValueError:
+        return jsonify(ErrorResponse("JSON expected").get()), 400
+
+    email = content["email"]
+    password = content["password"]
+    first_name = content["first_name"]
+    last_name = content["last_name"]
+    teacher_token = content["teacher_token"]
+    verify_password(teacher_token)
+    hashed_password = hash_password(password)
+
+    sanitize_user_input(email, first_name, last_name, teacher_token)
+    verify_teacher(teacher_token)
+    create_database_user(email, password, first_name, last_name, hashed_password, teacher_token)
+    create_session(email)
+    return jsonify({}), 201
 
 
 @app.route('/user/verify', methods=['PATCH'])

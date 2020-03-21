@@ -1,5 +1,5 @@
 from errorResponse import ErrorResponse
-from database import Database as db
+from database.database import Database as db
 import re
 
 class UserRegistrar:

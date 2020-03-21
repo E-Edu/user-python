@@ -43,7 +43,38 @@ def user_login():
 
 @app.route('/user/info', methods=['POST'])
 def user_info():
-    return 'info responses here'
+    global database
+    req_body = None
+    try:
+        req_body = json.loads(request.data)
+    except ValueError:
+        error = ErrorResponse('JSON expected', 400)
+        return jsonify(error.get_description()), error.get_code()
+
+    if not 'session' in req_body:
+        error = ErrorResponse('No session provided', 400)
+        return jsonify(error.get_description()), error.get_code()
+
+    if (not 'user' in req_body) or req_body['user'] == None:
+        # return information about owner of this session
+        pass
+    else:
+        # return informatin about the provided user
+        user_to_query = req_body['user']
+        if not utils.is_mail_format(user_to_query) or not database.existsUser(user_to_query):
+            error = ErrorResponse('No valid user', 400)
+            return jsonify(error.get_description()), error.get_code()
+
+        user_id = database.getUserIdByEmail(user_to_query)
+        infos = database.getUserInfo(user_id)
+
+        # TODO: privileged student + report_spammer
+        return {
+            'teacher': infos[7] == database.Role.TEACHER,
+            'admin': infos[7] == database.Role.ADMIN,
+            'priviliged_student': False,
+            'report_spammer': 0
+        }
 
 
 @app.route('/user/update', methods=['PUT'])

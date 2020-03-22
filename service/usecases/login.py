@@ -1,4 +1,3 @@
-from service.response import *
 from service.repository.user import *
 from service.error import *
 from service.util.jwt import *
@@ -9,9 +8,11 @@ import bcrypt
 def login(input: LoginIn):
 
     user = get_user_by_email(input.email)
+    if user is None:
+        return LoginErrorUserNotFound()
 
     if not __is_password_matching(input.password, user.password):
-        return Error("Wrong username or password")
+        return LoginErrorWrongUsernameOrPassword()
 
     payload = {
         "uuid": user.uuid,

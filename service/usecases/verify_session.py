@@ -1,7 +1,7 @@
 from service.util.jwt import *
 from service.response import *
 from service.transfer import *
-from service.error.error import *
+from service.error import *
 
 
 def verify_session(input: VerifySessionIn):
@@ -10,4 +10,4 @@ def verify_session(input: VerifySessionIn):
         json.loads(payload)
         return VerifySessionOut()
     except ValueError:
-        return Error("Invalid session")
+        return VerifySessionErrorInvalidSession()

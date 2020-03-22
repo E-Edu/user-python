@@ -1,6 +1,9 @@
 from flask import *
 
 
+# TODO move
+
+
 class Response:
     def __init__(self, value: object, code: int):
         self.value = value

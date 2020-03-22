@@ -2,11 +2,13 @@ from flask import Blueprint, request, jsonify
 from service.usecases.signup import *
 from service.usecases.login import *
 from service.usecases.info import *
+from service.usecases.modify import *
 from service.usecases.verify_email import *
 from service.usecases.verify_session import *
 from service.transfer.input import Signup as SignupIn
 from service.transfer.input import Login as LoginIn
 from service.transfer.input import Info as InfoIn
+from service.transfer.input import Modify as ModifyIn
 from service.transfer.input import VerifyEmail as VerifyEmailIn
 from service.transfer.input import VerifySession as VerifySessionIn
 
@@ -78,7 +80,22 @@ def user_info(uuid):
 # Set User Info
 @routes.route('/user', methods=['PUT'])  # TODO not REST compliant
 def user_update():
-    return 'and update responses here'
+    try:
+        content = json.loads(request.data)
+    except ValueError:
+        error = ErrorResponse("JSON expected", 400)
+        return error.get_json_value(), error.get_code()
+
+    if not content["session"]:  # TODO check other fields
+        response = ErrorResponse("session field is missing", 400)
+    else:
+        signup_out = modify(ModifyIn(content))
+        if signup_out is Error:  # TODO define explicit errors
+            response = ErrorResponse(signup_out.message, 400)
+        else:
+            response = Response(signup_out, 200)
+
+    return response.get_json_value(), response.get_code()
 
 
 # Verify Email
@@ -88,7 +105,7 @@ def user_verify_email():
         content = json.loads(request.data)
     except ValueError:
         error = ErrorResponse('JSON expected', 400)
-        return jsonify(error.get_description()), error.get_code()
+        return error.get_json_value(), error.get_code()
 
     if not content["token"]:
         response = ErrorResponse("token field is missing", 400)
@@ -109,10 +126,10 @@ def user_session():
         content = json.loads(request.data)
     except ValueError:
         error = ErrorResponse('JSON expected', 400)
-        return jsonify(error.get_description()), error.get_code()
+        return error.get_json_value(), error.get_code()
 
-    if not content["token"]:
-        response = ErrorResponse("token field is missing", 400)
+    if not content["session"]:
+        response = ErrorResponse("session field is missing", 400)
     else:
         verify_session_out = verify_session(VerifySessionIn(content))
         if verify_session_out is Error:  # TODO define explicit errors

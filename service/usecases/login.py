@@ -7,11 +7,11 @@ from service.transfer.output import Login as LoginOut
 import bcrypt
 
 
-def login(data: LoginIn) -> dict:
+def login(input: LoginIn):
 
-    user = get_user_by_email(data.email)
+    user = get_user_by_email(input.email)
 
-    if __is_password_matching(data.password, user.password):
+    if __is_password_matching(input.password, user.password):
         payload = {
               "uuid": user.uuid,
               "email": user.email,
@@ -30,4 +30,3 @@ def __is_password_matching(password: str, hashed: str) -> bool:
     password_encoded = password.encode("utf8")
     hashed_encoded = hashed.encode("utf8")
     return bcrypt.checkpw(password_encoded, hashed_encoded)
-

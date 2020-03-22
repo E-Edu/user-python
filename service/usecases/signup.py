@@ -1,7 +1,6 @@
 from service.response import *
 from service.repository.teacher import *
 from service.repository.user import *
-from service.usecases.send_verify_email import *
 from service.role import *
 from service.status import *
 from service.transfer.input import Signup as SignupIn
@@ -16,17 +15,17 @@ def signup(data: SignupIn) -> ErrorResponse:
     # key only exists if user wants to register as teacher
     if "teacher_token" in data.keys():
         teacher_token = data["teacher_token"]
-        if not _is_valid_teacher_token(teacher_token):
+        if not __is_valid_teacher_token(teacher_token):
             return Error("invalid teacher token")
         is_teacher = True
 
-    if not _is_valid_email(data.email):
+    if not __is_valid_email(data.email):
         return Error("invalid email")
-    if not _is_valid_name(data.first_name):
+    if not __is_valid_name(data.first_name):
         return Error("invalid first name")
-    if not _is_valid_name(data.last_name):
+    if not __is_valid_name(data.last_name):
         return Error("invalid last name")
-    if not _is_strong_password(data.password):
+    if not __is_strong_password(data.password):
         return Error("password too weak")
 
     uuid = uuid4()
@@ -41,7 +40,7 @@ def signup(data: SignupIn) -> ErrorResponse:
     user = User(uuid, data.email, data.password, data.first_name, data.last_name, Status.UNVERIFIED, role, None)
     create_user(user)
 
-    send_verify_email(data.email)
+    __send_verify_email(data.email)
 
     if is_teacher:
         asign_teacher_token_to_user(user, teacher_token)
@@ -49,7 +48,7 @@ def signup(data: SignupIn) -> ErrorResponse:
     return SignupOut()
 
 
-def _is_valid_teacher_token(teacher_token) -> bool:
+def __is_valid_teacher_token(teacher_token) -> bool:
     if len(teacher_token) != 32:
         return False
     elif re.search('[a-zA-Z0-9\\-]', teacher_token):
@@ -57,7 +56,7 @@ def _is_valid_teacher_token(teacher_token) -> bool:
     return False
 
 
-def _is_strong_password(self, password) -> bool:
+def __is_strong_password(self, password) -> bool:
     if len(password) < 8:
         return False
     elif re.search('[0-9]', password) is None:
@@ -67,7 +66,7 @@ def _is_strong_password(self, password) -> bool:
     return True
 
 
-def _is_valid_name(self, name) -> bool:
+def __is_valid_name(self, name) -> bool:
     if re.match(r"^[a-zA-Z]+$", name) is None:
         return False
     elif len(name) < 0:
@@ -77,9 +76,36 @@ def _is_valid_name(self, name) -> bool:
     return True
 
 
-def _is_valid_email(self, email) -> bool:
+def __is_valid_email(self, email) -> bool:
     if re.match(r"[^@]+@[^@]+\.[^@]+", email) is None:
         return False
     elif len(email) > 64:
         return False
     return True
+
+
+def __send_verify_email(email):
+
+    # TODO: add Token from Database to mail
+
+    port = os.environ["SMTP_PORT"] # ssl port
+    password = os.environ["SMTP_PASSWORD"]
+    host = os.environ["SMTP_HOST"]
+    sender_mail = os.environ["SMTP_USERNAME"]
+    receiver_mail = email
+    subject = "Verify Email"
+    body = open('resources/verify_email_template.html')  # TODO check path
+    message = body.read()
+
+    msg = MIMEMultipart()  # message of mail
+    msg["From"] = sender_mail
+    msg["To"] = receiver_mail
+    msg["Subject"] = subject
+    msg.attach(MIMEText(message, 'html'))
+
+    server = smtplib.SMTP_SSL(host, port)
+    server.connect(host, port)
+    server.login(sender_mail, password)
+
+    server.sendmail(sender_mail, receiver_mail, msg.as_string())
+    server.close()

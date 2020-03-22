@@ -2,9 +2,9 @@ from flask import Flask
 from service.database import *
 from service.blueprints import *
 
-database = Database()
-database.connect()
-database.setup()
+db = Database()
+db.connect()
+db.setup()
 
 app = Flask(__name__)
 app.register_blueprint(routes)

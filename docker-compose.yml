@@ -1,3 +1,18 @@
-# Please fill out with content
-
 version: '3.7'
+
+services:
+
+
+  db:
+    image: mariadb:latest
+    restart: always
+    environment:
+      MYSQL_DATABASE: userms
+      MYSQL_USER: userms
+      MYSQL_PASSWORD: userms
+      MYSQL_RANDOM_ROOT_PASSWORD: "true"
+    networks:
+      - userms
+
+networks:
+  userms:

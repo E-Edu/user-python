@@ -17,6 +17,9 @@ import os
 
 def signup(input: SignupIn):
 
+    if get_user_by_email(input.email) is not None:
+        return SignupErrorUserExist()
+
     # key only exists if user wants to register as teacher
     if input.teacher_token is None:
         is_teacher = False
@@ -43,7 +46,9 @@ def signup(input: SignupIn):
     while get_user(uuid) is not None:
         uuid = str(uuid4())
 
-    hashed_password = bcrypt.hashpw(input.password, bcrypt.gensalt(12))
+    password = input.password.encode("utf8")
+
+    hashed_password = bcrypt.hashpw(password, bcrypt.gensalt(12))
 
     user = User(uuid, input.email, hashed_password, input.first_name, input.last_name, Status.UNVERIFIED, role, None)
     create_user(user)

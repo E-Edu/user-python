@@ -28,7 +28,9 @@ def user_register():
         response = ErrorResponse("password field is missing", 400)
     else:
         signup_out = signup(SignupIn(content))
-        if isinstance(signup_out, SignupErrorInvalidTeacherToken):
+        if isinstance(signup_out, SignupErrorUserExist):
+            response = ErrorResponse(signup_out.message, 400)
+        elif isinstance(signup_out, SignupErrorInvalidTeacherToken):
             response = ErrorResponse(signup_out.message, 400)
         elif isinstance(signup_out, SignupErrorInvalidEmail):
             response = ErrorResponse(signup_out.message, 400)
@@ -59,7 +61,7 @@ def user_login():
 
     if not "email" in content:
         response = ErrorResponse("email field is missing", 400)
-    elif not "password" is content:
+    elif not "password" in content:
         response = ErrorResponse("password field is missing", 400)
     else:
         login_out = login(LoginIn(content))

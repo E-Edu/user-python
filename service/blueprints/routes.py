@@ -4,7 +4,7 @@ from service.error import *
 from service.transfer import *
 
 routes = Blueprint('routes', __name__)
-
+CONTENT_HEADER = {'Content-Type': 'application/json; charset=utf-8'}
 
 # Create User
 @routes.route('/user', methods=['POST'])
@@ -45,9 +45,9 @@ def user_register():
         elif isinstance(signup_out, Error):
             response = ErrorResponse(signup_out.message, 500)
         else:
-            response = Response(signup_out, 200)
+            response = Response(signup_out, 201)
 
-    return response.get_json_value(), response.get_code()
+    return response.get_json_value(), response.get_code(), CONTENT_HEADER
 
 
 # Login User
@@ -76,7 +76,7 @@ def user_login():
         else:
             response = Response(login_out, 200)
 
-    return response.get_json_value(), response.get_code()
+    return response.get_json_value(), response.get_code(), CONTENT_HEADER
 
 
 # Get User Info
@@ -92,7 +92,7 @@ def user_info(uuid):
     else:
         response = Response(info_out, 200)
 
-    return response.get_json_value(), response.get_code()
+    return response.get_json_value(), response.get_code(), CONTENT_HEADER
 
 
 # Set User Info
@@ -117,7 +117,7 @@ def user_update():
         else:
             response = Response(signup_out, 200)
 
-    return response.get_json_value(), response.get_code()
+    return response.get_json_value(), response.get_code(), CONTENT_HEADER
 
 
 # Verify Email
@@ -144,7 +144,7 @@ def user_verify_email():
         else:
             response = Response(verify_email_out, 200)
 
-    return response.get_json_value(), response.get_code()
+    return response.get_json_value(), response.get_code(), CONTENT_HEADER
 
 
 # Check User Session
@@ -169,7 +169,7 @@ def user_session():
         else:
             response = Response(verify_session_out, 200)
 
-    return response.get_json_value(), response.get_code()
+    return response.get_json_value(), response.get_code(), CONTENT_HEADER
 
 
 # Ban User
@@ -185,4 +185,4 @@ def user_ban(uuid):
     else:
         response = Response(ban_out, 200)
 
-    return response.get_json_value(), response.get_code()
+    return response.get_json_value(), response.get_code(),

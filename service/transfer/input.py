@@ -13,9 +13,9 @@ class Signup:
         self.teacher_token = obj["teacher_token"]
 
 
-class User:
-    def __init__(self):
-        pass
+class Info:
+    def __init__(self, uuid):
+        self.uuid = uuid
 
 
 class Modify:
@@ -33,6 +33,6 @@ class VerifyEmail:
         self.token = obj["token"]
 
 
-class Session:
+class VerifySession:
     def __init__(self, obj: dict):
         self.session = obj["session"]

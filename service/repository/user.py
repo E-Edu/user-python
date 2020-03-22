@@ -1,7 +1,7 @@
 from service.user import *
 from service.status import *
 from service.role import *
-from service import db
+from service.repository import db
 
 
 def user_exists(uuid):

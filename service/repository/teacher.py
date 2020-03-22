@@ -1,6 +1,6 @@
 from service.teacher import *
 from service.user import *
-from service import db
+from service.repository import db
 
 
 def search_teacher_token(token: str) -> bool:

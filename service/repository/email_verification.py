@@ -1,5 +1,5 @@
 from service.email_verification import *
-from service import db
+from service.repository import db
 from service.user import *
 
 

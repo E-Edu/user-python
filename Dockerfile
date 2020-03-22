@@ -1,10 +1,11 @@
-FROM python:3.8.2-alpine3.10
+FROM python:3.7-alpine
+
+EXPOSE 80
+
 COPY . /microservice/
 WORKDIR /microservice/
+RUN apk add gcc musl-dev libffi-dev libressl-dev gnupg --update libxml2-dev libxslt-dev  g++ bash
 RUN pip install --upgrade pip
-
-RUN apk add --update libxml2-dev libxslt-dev gcc g++ bash
-RUN apk add libffi-dev
 RUN pip install -r requirements.txt
-ENTRYPOINT ["python"]
-CMD ["run.py"]
+
+CMD ["gunicorn", "--workers", "4", "wsgi:application", "--bind", "0.0.0.0:80", "--log-syslog", "--log-level", "DEBUG"]

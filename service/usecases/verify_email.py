@@ -5,7 +5,7 @@ from service.error import *
 from service.transfer import *
 
 
-def verify_email(input: VerifyEmailIn):
+def verify_email(input: VerifyEmailIn):  # TODO add lifetime to verification
     email_verification = get_user_verification(input.token)
     if email_verification is None:
         return VerifyEmailErrorTokenNotFound()

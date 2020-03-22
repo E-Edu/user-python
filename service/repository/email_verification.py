@@ -1,5 +1,15 @@
 from service.email_verification import *
-from service import database
+from service import database, User
+
+
+def create_user_verification(user: User, token: str):
+    database.checkConnection()
+    if not database.isConnected():
+        return None
+    database.execute(
+        'INSERT INTO User_Verification (user_uuid, verification_code) VALUES (?, ?)',
+        (user.uuid, token))
+    database.connection.commit()
 
 
 def get_user_verification(token: str) -> EmailVerification:

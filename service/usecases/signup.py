@@ -1,3 +1,4 @@
+from service import create_user_verification
 from service.repository.teacher import *
 from service.repository.user import *
 from service.role import *
@@ -43,7 +44,7 @@ def signup(input: SignupIn):
     user = User(uuid, input.email, input.password, input.first_name, input.last_name, Status.UNVERIFIED, role, None)
     create_user(user)
 
-    __send_verify_email(input.email)
+    __send_verify_email(user)
 
     if is_teacher:
         asign_teacher_token_to_user(user, input.teacher_token)
@@ -87,23 +88,24 @@ def __is_valid_email(email) -> bool:
     return True
 
 
-def __send_verify_email(email):
+def __send_verify_email(user: User):
+    token = uuid4()
+    create_user_verification(user, token)
 
-    # TODO: add Token from Database to mail
-
-    port = os.environ["SMTP_PORT"] # ssl port
+    port = os.environ["SMTP_PORT"]
     password = os.environ["SMTP_PASSWORD"]
     host = os.environ["SMTP_HOST"]
     sender_mail = os.environ["SMTP_USERNAME"]
-    receiver_mail = email
+    receiver_mail = user.email
     subject = "Verify Email"
     body = open('resources/verify_email_template.html')  # TODO check path
-    message = body.read()
+    message = body.read()  # TODO add token to template
 
-    msg = MIMEMultipart()  # message of mail
+    msg = MIMEMultipart()
     msg["From"] = sender_mail
     msg["To"] = receiver_mail
     msg["Subject"] = subject
+    msg["X-Token"] = token
     msg.attach(MIMEText(message, 'html'))
 
     server = smtplib.SMTP_SSL(host, port)

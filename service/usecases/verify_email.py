@@ -1,4 +1,4 @@
-from service import create_session
+from service.util.create_session import *
 from service.repository.email_verification import *
 from service.repository.user import *
 from service.error import *

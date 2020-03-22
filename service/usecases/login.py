@@ -1,6 +1,6 @@
 from service.repository.user import *
 from service.error import *
-from service.util.jwt import *
+from service.util.create_session import create_session
 from service.transfer import *
 import bcrypt
 
@@ -14,16 +14,7 @@ def login(input: LoginIn):
     if not __is_password_matching(input.password, user.password):
         return LoginErrorWrongUsernameOrPassword()
 
-    payload = {
-        "uuid": user.uuid,
-        "email": user.email,
-        "first_name": user.first_name,
-        "last_name": user.last_name,
-        "role": user.role,
-        "status": user.status
-    }
-    jwt_token = jwt_encode(payload)
-    return LoginOut(jwt_token)
+    return LoginOut(create_session(user))
 
 
 def __is_password_matching(password: str, hashed: str) -> bool:

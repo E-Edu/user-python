@@ -14,11 +14,13 @@ class Signup:
 
 
 class Info:
-    def __init__(self, user: User):
+    def __init__(self, user: User):  # TODO remove unnecessary fields
         self.teacher = user.role == Role.TEACHER,
         self.admin = user.role == Role.ADMIN,
         self.priviliged_student = user.role == Role.PRIVILEGED_STUDENT,
         self.report_spammer = user.status == Status.REPORTED
+        self.role = user.role
+        self.status = user.status
 
 
 class Modify:

@@ -21,7 +21,7 @@ def get_user(uuid):
     return __extract_user_from_database_request(result)
 
 
-def activate_user(uuid: str):
+def activate_user(uuid):
     database.checkConnection()
     if not database.isConnected():
         return None

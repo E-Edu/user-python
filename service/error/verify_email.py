@@ -6,6 +6,11 @@ class VerifyEmailError(Error):
         super().__init__(message)
 
 
+class VerifyEmailErrorUserNotFound(VerifyEmailError):
+    def __init__(self):
+        super().__init__("User not found")
+
+
 class VerifyEmailErrorTokenNotFound(VerifyEmailError):
     def __init__(self):
         super().__init__("Token not found")

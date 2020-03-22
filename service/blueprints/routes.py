@@ -130,6 +130,8 @@ def user_verify_email():
         verify_email_out = verify_email(VerifyEmailIn(content))
         if verify_email_out is VerifyEmailErrorTokenNotFound:
             response = ErrorResponse(verify_email_out.message, 400)
+        elif verify_email_out is VerifyEmailErrorUserNotFound:
+            response = ErrorResponse(verify_email_out.message, 400)
         elif verify_email_out is VerifyEmailError:
             response = ErrorResponse(verify_email_out.message, 500)
         elif verify_email_out is Error:

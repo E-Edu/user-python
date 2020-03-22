@@ -2,6 +2,7 @@ from flask import Blueprint, request, jsonify
 from service.usecases import *
 from service.error import *
 from service.transfer import *
+from service.usecases.signup import signup as signup_user
 
 routes = Blueprint('routes', __name__)
 
@@ -24,7 +25,7 @@ def user_register():
     elif not content["password"]:
         response = ErrorResponse("password field is missing", 400)
     else:
-        signup_out = signup(SignupIn(content))
+        signup_out = signup_user(SignupIn(content))
         if signup_out is SignupErrorInvalidTeacherToken:
             response = ErrorResponse(signup_out.message, 400)
         elif signup_out is SignupErrorInvalidEmail:

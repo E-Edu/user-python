@@ -13,6 +13,8 @@ services:
       MYSQL_RANDOM_ROOT_PASSWORD: "true"
     networks:
       - userms
+    ports:
+      - '3306:3306'
 
 networks:
   userms:

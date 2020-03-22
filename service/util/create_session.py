@@ -1,4 +1,5 @@
-from service import User, jwt_encode
+from service.user import *
+from service.util.jwt import *
 
 
 def create_session(user: User):

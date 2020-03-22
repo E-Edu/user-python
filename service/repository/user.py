@@ -21,6 +21,14 @@ def get_user(uuid):
     return __extract_user_from_database_request(result)
 
 
+def activate_user(uuid: str):
+    database.checkConnection()
+    if not database.isConnected():
+        return None
+    database.execute('UPDATE User_Users SET status = ? WHERE uuid = ?', (Status.VERIFIED, uuid))
+    database.connection.commit()
+
+
 # returns the matching uuid if existing, or None
 def get_user_by_email(email):
     database.checkConnection()

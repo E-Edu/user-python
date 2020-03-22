@@ -1,23 +1,23 @@
-from service.response import *
 from service.user import *
-
+from service.status import *
+from service.role import *
 
 class Login:
     def __init__(self, session):
         self.session = session
 
 
-class Session:
+class Signup:
     def __init__(self):
         pass
 
 
-class User:
+class Info:
     def __init__(self, user: User):
-        self.teacher = user.role == 0,
-        self.admin = user.role == 2,
-        self.priviliged_student = user.role == 3,
-        self.report_spammer = user.status == 2
+        self.teacher = user.role == Role.TEACHER,
+        self.admin = user.role == Role.ADMIN,
+        self.priviliged_student = user.role == Role.PRIVILIGED_STUDENT,
+        self.report_spammer = user.status == Status.REPORTED
 
 
 class Modify:
@@ -30,6 +30,6 @@ class VerifyEmail:
         self.session = session
 
 
-class Signup:
+class VerifySession:
     def __init__(self):
         pass

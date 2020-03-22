@@ -5,11 +5,11 @@ from service.role import *
 from service.status import *
 from service.transfer import *
 from service.error import *
+from service.util.check_data import *
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from uuid import uuid4
-import re
 import os
 
 
@@ -18,18 +18,18 @@ def signup(input: SignupIn):
     # key only exists if user wants to register as teacher
     if input.teacher_token is None:
         is_teacher = False
-    elif not __is_valid_teacher_token(input.teacher_token):
+    elif not is_valid_teacher_token(input.teacher_token):
         return SignupErrorInvalidTeacherToken()
     else:
         is_teacher = True
 
-    if not __is_valid_email(input.email):
+    if not is_valid_email(input.email):
         return SignupErrorInvalidEmail()
-    if not __is_valid_name(input.first_name):
+    if not is_valid_name(input.first_name):
         return SignupErrorInvalidFirstName()
-    if not __is_valid_name(input.last_name):
+    if not is_valid_name(input.last_name):
         return SignupErrorInvalidLastName()
-    if not __is_strong_password(input.password):
+    if not is_strong_password(input.password):
         return SignupErrorInvalidWeakPassword()
 
     if is_teacher:
@@ -50,38 +50,6 @@ def signup(input: SignupIn):
         asign_teacher_token_to_user(user, input.teacher_token)
 
     return SignupOut()
-
-
-def __is_valid_teacher_token(teacher_token) -> bool:
-    return search_teacher_token(teacher_token)
-
-
-def __is_strong_password(password) -> bool:
-    if len(password) < 8:
-        return False
-    elif re.search('[0-9]', password) is None:
-        return False
-    elif re.search('[a-zA-Z]', password) is None:
-        return False
-    return True
-
-
-def __is_valid_name(name) -> bool:
-    if re.match(r"^[a-zA-Z]+$", name) is None:
-        return False
-    elif len(name) < 0:
-        return False
-    elif len(name) > 32:
-        return False
-    return True
-
-
-def __is_valid_email(email) -> bool:
-    if re.match(r"[^@]+@[^@]+\.[^@]+", email) is None:
-        return False
-    elif len(email) > 64:
-        return False
-    return True
 
 
 def __send_verify_email(user: User):

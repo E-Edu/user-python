@@ -23,6 +23,11 @@ class Info:
         self.status = user.status
 
 
+class Ban:
+    def __init__(self):
+        pass
+
+
 class Modify:
     def __init__(self):
         pass

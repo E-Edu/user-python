@@ -1,3 +1,5 @@
+import bcrypt
+
 from service.repository.email_verification import *
 from service.repository.teacher import *
 from service.repository.user import *
@@ -5,31 +7,34 @@ from service.role import *
 from service.status import *
 from service.transfer import *
 from service.error import *
+from service.util.check_data import *
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from uuid import uuid4
-import re
 import os
 
 
 def signup(input: SignupIn):
 
-    is_teacher = False
+    if get_user_by_email(input.email) is not None:
+        return SignupErrorUserExist()
 
     # key only exists if user wants to register as teacher
-    if not __is_valid_teacher_token(input.teacher_token):
+    if input.teacher_token is None:
+        is_teacher = False
+    elif not is_valid_teacher_token(input.teacher_token):
         return SignupErrorInvalidTeacherToken()
     else:
         is_teacher = True
 
-    if not __is_valid_email(input.email):
+    if not is_valid_email(input.email):
         return SignupErrorInvalidEmail()
-    if not __is_valid_name(input.first_name):
+    if not is_valid_name(input.first_name):
         return SignupErrorInvalidFirstName()
-    if not __is_valid_name(input.last_name):
+    if not is_valid_name(input.last_name):
         return SignupErrorInvalidLastName()
-    if not __is_strong_password(input.password):
+    if not is_strong_password(input.password):
         return SignupErrorInvalidWeakPassword()
 
     if is_teacher:
@@ -37,14 +42,18 @@ def signup(input: SignupIn):
     else:
         role = Role.USER
 
-    uuid = uuid4()
+    uuid = str(uuid4())
     while get_user(uuid) is not None:
-        uuid = uuid4()
+        uuid = str(uuid4())
 
-    user = User(uuid, input.email, input.password, input.first_name, input.last_name, Status.UNVERIFIED, role, None)
+    password = input.password.encode("utf8")
+
+    hashed_password = bcrypt.hashpw(password, bcrypt.gensalt(12))
+
+    user = User(uuid, input.email, hashed_password, input.first_name, input.last_name, Status.UNVERIFIED, role, None)
     create_user(user)
 
-    __send_verify_email(user)
+    # TODO __send_verify_email(user)
 
     if is_teacher:
         asign_teacher_token_to_user(user, input.teacher_token)
@@ -52,44 +61,8 @@ def signup(input: SignupIn):
     return SignupOut()
 
 
-def __is_valid_teacher_token(teacher_token) -> bool:
-    if len(teacher_token) != 32:
-        return False
-    elif re.search('[a-zA-Z0-9\\-]', teacher_token):
-        return search_teacher_token(teacher_token)  # TODO Teacher Repository
-    return False
-
-
-def __is_strong_password(password) -> bool:
-    if len(password) < 8:
-        return False
-    elif re.search('[0-9]', password) is None:
-        return False
-    elif re.search('[a-zA-Z]', password) is None:
-        return False
-    return True
-
-
-def __is_valid_name(name) -> bool:
-    if re.match(r"^[a-zA-Z]+$", name) is None:
-        return False
-    elif len(name) < 0:
-        return False
-    elif len(name) > 32:
-        return False
-    return True
-
-
-def __is_valid_email(email) -> bool:
-    if re.match(r"[^@]+@[^@]+\.[^@]+", email) is None:
-        return False
-    elif len(email) > 64:
-        return False
-    return True
-
-
 def __send_verify_email(user: User):
-    token = uuid4()
+    token = str(uuid4())
     create_user_verification(user, token)
 
     port = os.environ["SMTP_PORT"]

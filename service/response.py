@@ -1,11 +1,11 @@
 from flask import *
-
+import json
 
 # TODO move
 
 
 class Response:
-    def __init__(self, value: object, code: int):
+    def __init__(self, value, code: int):
         self.value = value
         self.code = code
 
@@ -13,12 +13,20 @@ class Response:
         return self.value
 
     def get_json_value(self):
-        return jsonify(self.get_value())
+        try:
+            return json.dumps(self.get_value().__dict__)
+        except TypeError:
+            return {}
 
     def get_code(self):
         return self.code
 
 
+class ErrorField:  # TODO REMOVE
+    def __init__(self, message: str):
+        self.error = message
+
+
 class ErrorResponse(Response):
     def __init__(self, error_message: str, code: int):
-        super().__init__({"error": error_message}, code)
+        super().__init__(ErrorField(error_message), code)

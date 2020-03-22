@@ -24,8 +24,13 @@ class Database:  # TODO check if we can reduce function calls for isConnected an
     def setup(self):
         # TODO check path
         setup_script = open("resources/setup.sql")
-        self.execute(setup_script.read())
+        setup_script_text = setup_script.read()
+        setup_script_statements = setup_script_text.split(";")
         setup_script.close()
+        for i in setup_script_statements:
+            if not i.strip():
+                continue
+            self.execute(i)
         self.connection.commit()
 
     def isConnected(self):

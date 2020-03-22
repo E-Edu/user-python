@@ -1,13 +1,12 @@
 from service.util.jwt import *
-from service.response import *
 from service.transfer import *
 from service.error import *
+import jwt
 
 
 def verify_session(input: VerifySessionIn):
-    payload = jwt_decode(input.session)
     try:
-        json.loads(payload)
+        jwt_decode(input.session)
         return VerifySessionOut()
-    except ValueError:
+    except jwt.exceptions.PyJWTError:
         return VerifySessionErrorInvalidSession()

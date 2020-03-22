@@ -18,6 +18,11 @@ class Info:
         self.uuid = uuid
 
 
+class Ban:
+    def __init__(self, uuid):
+        self.uuid = uuid
+
+
 class Modify:
     def __init__(self, obj: dict):
         self.session = obj["session"]

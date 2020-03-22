@@ -173,13 +173,7 @@ def user_session():
 # Ban User
 @routes.route('/user/<uuid>/ban', methods=['POST'])
 def user_ban(uuid):
-    try:
-        content = json.loads(request.data)
-    except ValueError:
-        error = ErrorResponse('JSON expected', 400)
-        return error.get_json_value(), error.get_code()
-
-    ban_out = verify_session(BanIn(content))
+    ban_out = ban(BanIn(uuid))
     if isinstance(ban_out, VerifySessionErrorInvalidSession):
         response = ErrorResponse(ban_out.message, 400)
     elif isinstance(ban_out, VerifySessionError):

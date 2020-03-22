@@ -21,7 +21,7 @@ User_Teachers (
 
 CREATE TABLE IF NOT EXISTS
 User_Verification(
-    uuid VARCHAR(64) NOT NULL,
+    user_uuid VARCHAR(64) NOT NULL,
     verification_code VARCHAR(255),
     createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
     PRIMARY KEY (uuid)

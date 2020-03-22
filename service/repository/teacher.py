@@ -20,7 +20,7 @@ def asign_teacher_token_to_user(user: User, token: str) -> bool:
         return None
     if not search_teacher_token(token):
         return False
-    database.execute('UPADTE FROM User_Teachers SET user_uuid WHERE token = ?', token)
+    database.execute('UPADTE FROM User_Teachers SET user_uuid = ? WHERE token = ?', user.uuid, token)
     database.connection.commit()
     return True
 

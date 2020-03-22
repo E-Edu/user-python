@@ -1,9 +1,8 @@
 from flask import Flask
-from service.database import database as db
-from service.blueprints.routes import routes
-from service.blueprints.error import error
+from service.database import *
+from service.blueprints import *
 
-database = db.Database()
+database = Database()
 database.connect()
 database.setup()
 

@@ -1,5 +1,4 @@
-from service.transfer.input import Modify as ModifyIn
-from service.transfer.output import Modify as ModifyOut
+from service.transfer import *
 
 
 def modify(input: ModifyIn):

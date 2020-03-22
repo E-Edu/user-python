@@ -2,9 +2,8 @@ from service.repository.teacher import *
 from service.repository.user import *
 from service.role import *
 from service.status import *
-from service.transfer.input import Signup as SignupIn
-from service.transfer.output import Signup as SignupOut
-from service.error.error import *
+from service.transfer import *
+from service.error import *
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
@@ -18,20 +17,19 @@ def signup(input: SignupIn):
     is_teacher = False
 
     # key only exists if user wants to register as teacher
-
     if not __is_valid_teacher_token(input.teacher_token):
-        return Error("invalid teacher token")
+        return SignupErrorInvalidTeacherToken()
     else:
         is_teacher = True
 
     if not __is_valid_email(input.email):
-        return Error("invalid email")
+        return SignupErrorInvalidEmail()
     if not __is_valid_name(input.first_name):
-        return Error("invalid first name")
+        return SignupErrorInvalidFirstName()
     if not __is_valid_name(input.last_name):
-        return Error("invalid last name")
+        return SignupErrorInvalidLastName()
     if not __is_strong_password(input.password):
-        return Error("password too weak")
+        return SignupErrorInvalidWeakPassword()
 
     if is_teacher:
         role = Role.TEACHER

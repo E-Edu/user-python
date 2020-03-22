@@ -1,7 +1,4 @@
 import mysql.connector as mariadb
-from service.status import *
-from service.role import *
-import uuid
 import os
 
 

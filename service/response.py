@@ -22,6 +22,11 @@ class Response:
         return self.code
 
 
+class ErrorField:
+    def __init__(self, message: str):
+        self.error = message
+
+
 class ErrorResponse(Response):
     def __init__(self, error_message: str, code: int):
-        super().__init__({"error": error_message}, code)
+        super().__init__(ErrorField(error_message), code)

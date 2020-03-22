@@ -1,4 +1,3 @@
-from service.response import *
 from service.repository.teacher import *
 from service.repository.user import *
 from service.role import *
@@ -6,44 +5,50 @@ from service.status import *
 from service.transfer.input import Signup as SignupIn
 from service.transfer.output import Signup as SignupOut
 from service.error.error import *
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 from uuid import uuid4
 import re
+import os
 
 
-def signup(data: SignupIn) -> ErrorResponse:
+def signup(input: SignupIn):
+
     is_teacher = False
+
     # key only exists if user wants to register as teacher
-    if "teacher_token" in data.keys():
-        teacher_token = data["teacher_token"]
-        if not __is_valid_teacher_token(teacher_token):
-            return Error("invalid teacher token")
+
+    if not __is_valid_teacher_token(input.teacher_token):
+        return Error("invalid teacher token")
+    else:
         is_teacher = True
 
-    if not __is_valid_email(data.email):
+    if not __is_valid_email(input.email):
         return Error("invalid email")
-    if not __is_valid_name(data.first_name):
+    if not __is_valid_name(input.first_name):
         return Error("invalid first name")
-    if not __is_valid_name(data.last_name):
+    if not __is_valid_name(input.last_name):
         return Error("invalid last name")
-    if not __is_strong_password(data.password):
+    if not __is_strong_password(input.password):
         return Error("password too weak")
-
-    uuid = uuid4()
-
-    while get_user(uuid) is not None:
-        uuid = uuid4()
 
     if is_teacher:
         role = Role.TEACHER
     else:
         role = Role.USER
-    user = User(uuid, data.email, data.password, data.first_name, data.last_name, Status.UNVERIFIED, role, None)
+
+    uuid = uuid4()
+    while get_user(uuid) is not None:
+        uuid = uuid4()
+
+    user = User(uuid, input.email, input.password, input.first_name, input.last_name, Status.UNVERIFIED, role, None)
     create_user(user)
 
-    __send_verify_email(data.email)
+    __send_verify_email(input.email)
 
     if is_teacher:
-        asign_teacher_token_to_user(user, teacher_token)
+        asign_teacher_token_to_user(user, input.teacher_token)
 
     return SignupOut()
 
@@ -56,7 +61,7 @@ def __is_valid_teacher_token(teacher_token) -> bool:
     return False
 
 
-def __is_strong_password(self, password) -> bool:
+def __is_strong_password(password) -> bool:
     if len(password) < 8:
         return False
     elif re.search('[0-9]', password) is None:
@@ -66,7 +71,7 @@ def __is_strong_password(self, password) -> bool:
     return True
 
 
-def __is_valid_name(self, name) -> bool:
+def __is_valid_name(name) -> bool:
     if re.match(r"^[a-zA-Z]+$", name) is None:
         return False
     elif len(name) < 0:
@@ -76,7 +81,7 @@ def __is_valid_name(self, name) -> bool:
     return True
 
 
-def __is_valid_email(self, email) -> bool:
+def __is_valid_email(email) -> bool:
     if re.match(r"[^@]+@[^@]+\.[^@]+", email) is None:
         return False
     elif len(email) > 64:

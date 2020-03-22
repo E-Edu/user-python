@@ -15,10 +15,10 @@ import os
 
 def signup(input: SignupIn):
 
-    is_teacher = False
-
     # key only exists if user wants to register as teacher
-    if not __is_valid_teacher_token(input.teacher_token):
+    if input.teacher_token is None:
+        is_teacher = False
+    elif not __is_valid_teacher_token(input.teacher_token):
         return SignupErrorInvalidTeacherToken()
     else:
         is_teacher = True
@@ -53,11 +53,7 @@ def signup(input: SignupIn):
 
 
 def __is_valid_teacher_token(teacher_token) -> bool:
-    if len(teacher_token) != 32:
-        return False
-    elif re.search('[a-zA-Z0-9\\-]', teacher_token):
-        return search_teacher_token(teacher_token)  # TODO Teacher Repository
-    return False
+    return search_teacher_token(teacher_token)
 
 
 def __is_strong_password(password) -> bool:

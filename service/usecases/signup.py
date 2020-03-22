@@ -17,6 +17,9 @@ import os
 
 def signup(input: SignupIn):
 
+    if get_user_by_email(input.email) is not None:
+        return SignupErrorUserExist()
+
     # key only exists if user wants to register as teacher
     if input.teacher_token is None:
         is_teacher = False

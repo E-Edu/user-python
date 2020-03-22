@@ -22,7 +22,7 @@ class Response:
         return self.code
 
 
-class ErrorField:
+class ErrorField:  # TODO REMOVE
     def __init__(self, message: str):
         self.error = message
 

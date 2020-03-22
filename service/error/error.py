@@ -88,6 +88,11 @@ class SignupErrorInvalidEmail(SignupError):
         super().__init__("invalid email")
 
 
+class SignupErrorUserExist(SignupError):
+    def __init__(self):
+        super().__init__("user already exist")
+
+
 class SignupErrorInvalidFirstName(SignupError):
     def __init__(self):
         super().__init__("invalid first name")

@@ -1,7 +1,6 @@
 from service.util.jwt import *
 from service.response import *
-from service.transfer.input import VerifySession as VerifySessionIn
-from service.transfer.output import VerifySession as VerifySessionOut
+from service.transfer import *
 from service.error.error import *
 
 

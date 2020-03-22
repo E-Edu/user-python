@@ -1,16 +1,7 @@
 from flask import Blueprint, request, jsonify
-from service.usecases.signup import *
-from service.usecases.login import *
-from service.usecases.info import *
-from service.usecases.modify import *
-from service.usecases.verify_email import *
-from service.usecases.verify_session import *
-from service.transfer.input import Signup as SignupIn
-from service.transfer.input import Login as LoginIn
-from service.transfer.input import Info as InfoIn
-from service.transfer.input import Modify as ModifyIn
-from service.transfer.input import VerifyEmail as VerifyEmailIn
-from service.transfer.input import VerifySession as VerifySessionIn
+from service.usecases import *
+from service.error import *
+from service.transfer import *
 
 routes = Blueprint('routes', __name__)
 
@@ -73,7 +64,7 @@ def user_info(uuid):
         response = ErrorResponse(info_out.message, 400)
     else:
         response = Response(info_out, 200)
-        
+
     return response.get_json_value(), response.get_code()
 
 

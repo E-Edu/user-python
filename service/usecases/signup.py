@@ -2,9 +2,8 @@ from service.repository.teacher import *
 from service.repository.user import *
 from service.role import *
 from service.status import *
-from service.transfer.input import Signup as SignupIn
-from service.transfer.output import Signup as SignupOut
-from service.error.error import *
+from service.transfer import *
+from service.error import *
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText

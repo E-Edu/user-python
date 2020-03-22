@@ -1,8 +1,7 @@
 from service.repository.email_verification import *
 from service.repository.user import *
-from service.error.error import *
-from service.transfer.output import VerifyEmail as VerifyEmailOut
-from service.transfer.input import VerifyEmail as VerifyEmailIn
+from service.error import *
+from service.transfer import *
 
 
 def verify_email(input: VerifyEmailIn):

@@ -8,7 +8,7 @@ def user_exists(uuid):
     db.checkConnection()
     if not db.isConnected():
         return None
-    db.execute('SELECT uuid FROM User_Users WHERE uuid = ?', uuid)
+    db.execute('SELECT uuid FROM User_Users WHERE uuid = ?', (uuid,))
     return db.cursor.fetchone() is not None
 
 
@@ -16,7 +16,7 @@ def get_user(uuid):
     db.checkConnection()
     if not db.isConnected():
         return None
-    db.execute('SELECT * FROM User_Users WHERE uuid = ?', str(uuid))
+    db.execute('SELECT * FROM User_Users WHERE uuid = ?', (uuid,))
     result = db.cursor.fetchone()
     return __extract_user_from_database_request(result)
 
@@ -34,7 +34,7 @@ def get_user_by_email(email):
     db.checkConnection()
     if not db.isConnected():
         return None
-    db.execute('SELECT * FROM User_Users WHERE email = ?', email)
+    db.execute('SELECT * FROM User_Users WHERE email = ?', (email,))
     result = db.cursor.fetchone()
     return __extract_user_from_database_request(result)
 
@@ -64,7 +64,7 @@ def create_user(user: User):
         return None
     db.execute(
         'INSERT INTO User_Users (uuid, email, password, firstName, lastName, status, role) VALUES (?, ?, ?, ?, ?, ?, ?)',
-        (user.uuid, user.first_name, user.last_name, user.email, user.password, user.status, user.role))
+        (user.uuid, user.email, user.password, user.first_name, user.last_name, user.status.value, user.role.value))
     db.connection.commit()
 
 
@@ -72,7 +72,7 @@ def delete_user(uuid):
     db.checkConnection()
     if not db.isConnected():
         return None
-    db.execute('DELETE FROM User_Users WHERE uuid = ?', str(uuid))
+    db.execute('DELETE FROM User_Users WHERE uuid = ?', (uuid,))
     db.connection.commit()
 
 

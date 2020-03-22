@@ -1,4 +1,4 @@
-CREATE TABLE
+CREATE TABLE IF NOT EXISTS
 User_Users (
     uuid VARCHAR(64) NOT NULL,
     email VARCHAR(255),
@@ -11,7 +11,7 @@ User_Users (
     PRIMARY KEY (uuid)
 );
 
-CREATE TABLE
+CREATE TABLE IF NOT EXISTS
 User_Teachers (
     user_uuid VARCHAR(64) NOT NULL,
     schoolDomain VARCHAR(255),
@@ -19,7 +19,7 @@ User_Teachers (
     PRIMARY KEY (token)
 );
 
-CREATE TABLE
+CREATE TABLE IF NOT EXISTS
 User_Verification (
     user_uuid VARCHAR(64) NOT NULL,
     verification_code VARCHAR(255),

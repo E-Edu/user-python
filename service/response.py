@@ -5,7 +5,7 @@ from flask import *
 
 
 class Response:
-    def __init__(self, value: object, code: int):
+    def __init__(self, value, code: int):
         self.value = value
         self.code = code
 
@@ -13,7 +13,10 @@ class Response:
         return self.value
 
     def get_json_value(self):
-        return jsonify(self.get_value())
+        try:
+            return jsonify(self.get_value())
+        except TypeError:
+            return {}
 
     def get_code(self):
         return self.code

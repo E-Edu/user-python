@@ -1,3 +1,5 @@
+import bcrypt
+
 from service.repository.email_verification import *
 from service.repository.teacher import *
 from service.repository.user import *
@@ -37,14 +39,16 @@ def signup(input: SignupIn):
     else:
         role = Role.USER
 
-    uuid = uuid4()
+    uuid = str(uuid4())
     while get_user(uuid) is not None:
-        uuid = uuid4()
+        uuid = str(uuid4())
 
-    user = User(uuid, input.email, input.password, input.first_name, input.last_name, Status.UNVERIFIED, role, None)
+    hashed_password = bcrypt.hashpw(input.password, bcrypt.gensalt(12))
+
+    user = User(uuid, input.email, hashed_password, input.first_name, input.last_name, Status.UNVERIFIED, role, None)
     create_user(user)
 
-    __send_verify_email(user)
+    # TODO __send_verify_email(user)
 
     if is_teacher:
         asign_teacher_token_to_user(user, input.teacher_token)
@@ -85,7 +89,7 @@ def __is_valid_email(email) -> bool:
 
 
 def __send_verify_email(user: User):
-    token = uuid4()
+    token = str(uuid4())
     create_user_verification(user, token)
 
     port = os.environ["SMTP_PORT"]

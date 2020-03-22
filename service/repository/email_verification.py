@@ -1,5 +1,6 @@
 from service.email_verification import *
-from service import database, User
+from service.database import *
+from service.user import *
 
 
 def create_user_verification(user: User, token: str):

@@ -1,4 +1,4 @@
-from service import create_user_verification
+from service.repository.email_verification import *
 from service.repository.teacher import *
 from service.repository.user import *
 from service.role import *

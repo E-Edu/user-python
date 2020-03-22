@@ -1,5 +1,5 @@
 from flask import *
-
+import json
 
 # TODO move
 
@@ -14,7 +14,7 @@ class Response:
 
     def get_json_value(self):
         try:
-            return jsonify(self.get_value())
+            return json.dumps(self.get_value().__dict__)
         except TypeError:
             return {}
 

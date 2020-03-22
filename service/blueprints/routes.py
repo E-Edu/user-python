@@ -59,7 +59,7 @@ def user_login():
 
     if not "email" in content:
         response = ErrorResponse("email field is missing", 400)
-    elif not "password" is content:
+    elif not "password" in content:
         response = ErrorResponse("password field is missing", 400)
     else:
         login_out = login(LoginIn(content))

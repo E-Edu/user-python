@@ -43,7 +43,9 @@ def signup(input: SignupIn):
     while get_user(uuid) is not None:
         uuid = str(uuid4())
 
-    hashed_password = bcrypt.hashpw(input.password, bcrypt.gensalt(12))
+    password = input.password.encode("utf8")
+
+    hashed_password = bcrypt.hashpw(password, bcrypt.gensalt(12))
 
     user = User(uuid, input.email, hashed_password, input.first_name, input.last_name, Status.UNVERIFIED, role, None)
     create_user(user)

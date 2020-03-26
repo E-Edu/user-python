@@ -1,4 +1,5 @@
 from flask import Blueprint, request, jsonify
+from flask_cors import cross_origin
 from service.usecases import *
 from service.error import *
 from service.transfer import *
@@ -11,6 +12,7 @@ CONTENT_HEADER = {'Content-Type': 'application/json; charset=utf-8'}
 
 # Create User
 @routes.route('/user', methods=['POST'])
+@cross_origin()
 def user_register():
     try:
         content = json.loads(request.data)
@@ -55,6 +57,7 @@ def user_register():
 
 # Login User
 @routes.route('/user/login', methods=['POST'])
+@cross_origin()
 def user_login():
     try:
         content = json.loads(request.data)
@@ -84,6 +87,7 @@ def user_login():
 
 # Get User Info
 @routes.route('/user/<uuid>', methods=['GET'])  # TODO not REST compliant
+@cross_origin()
 def user_info(uuid):
     info_out = info(InfoIn(uuid))
     if isinstance(info_out, InfoErrorUserNotFound):
@@ -100,6 +104,7 @@ def user_info(uuid):
 
 # Set User Info
 @routes.route('/user', methods=['PUT'])  # TODO not REST compliant
+@cross_origin()
 def user_update():
     try:
         content = json.loads(request.data)
@@ -125,6 +130,7 @@ def user_update():
 
 # Verify Email
 @routes.route('/user/verify', methods=['PATCH'])
+@cross_origin()
 def user_verify_email():
     try:
         content = json.loads(request.data)
@@ -152,6 +158,7 @@ def user_verify_email():
 
 # Check User Session
 @routes.route('/user/session', methods=['POST'])
+@cross_origin()
 def user_session():
     try:
         content = json.loads(request.data)
@@ -177,6 +184,7 @@ def user_session():
 
 # Ban User
 @routes.route('/user/<uuid>/ban', methods=['POST'])
+@cross_origin()
 def user_ban(uuid):
     ban_out = ban(BanIn(uuid))
     if isinstance(ban_out, VerifySessionErrorInvalidSession):

@@ -34,6 +34,5 @@ Response:
   "first_name": "string",
   "last_name": "string",
   "role": "int",
-  "status": "int"
 }
 ```

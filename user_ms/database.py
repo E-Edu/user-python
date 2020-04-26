@@ -1,11 +1,13 @@
 from user_ms import db
 import json
+import datetime
 
 class User(db.Model):
-    user_id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True)
     first_name = db.Column(db.String)
     last_name = db.Column(db.String)
-    created_at = db.Column(db.DateTime)
+    email = db.Column(db.String)
+    created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     role = db.Column(db.Integer)
     status = db.Column(db.Integer)
     teacher_token = db.Column(db.String)

@@ -2,19 +2,37 @@ version: '3.7'
 
 services:
 
+    user_database:
+      image: postgres:latest
+      environment:
+        - POSTGRES_DB=report
+        - POSTGRES_USER=report
+        - POSTGRES_PASSWORD=test #! change bevore deploy
+      restart: unless-stopped
+      container_name: user_database
+      hostname: user_database
 
-  db:
-    image: mariadb:latest
-    restart: always
-    environment:
-      MYSQL_DATABASE: userms
-      MYSQL_USER: userms
-      MYSQL_PASSWORD: userms
-      MYSQL_RANDOM_ROOT_PASSWORD: "true"
-    networks:
-      - userms
-    ports:
-      - '3306:3306'
-
-networks:
-  userms:
+    user_ms:
+      image: user-ms
+      environment:
+        - DB_HOSTNAME=report_database
+        - DB_USERNAME=report
+        - DB_PASSWORD=test  #! change bevore deploy
+        - DB_DATABASE=report
+        - conf_mode=deploy
+        - JWT_Secret=test #! change bevore deploy
+        - MS_Secret=test #! change bevore deploy
+        #? add sentry data
+        - SENTRY_KEY=
+        - SENTRY_ORGANIZATION=
+        - SENTRY_PROJECT=
+        - ALL_SENTRY_VALUES_SET=test #! set to added if sentry data set
+      build: .
+      volumes:
+        - "./:/app"
+      restart: unless-stopped
+      container_name: user_ms
+      ports: 
+        - "5000:5000"
+      depends_on: 
+        - user_database

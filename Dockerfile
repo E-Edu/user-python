@@ -1,11 +1,15 @@
-FROM python:3.7-alpine
+FROM python:3
 
-EXPOSE 80
+ENV APP /app
 
-COPY . /microservice/
-WORKDIR /microservice/
-RUN apk add gcc musl-dev libffi-dev libressl-dev gnupg --update libxml2-dev libxslt-dev  g++ bash
-RUN pip install --upgrade pip
+RUN mkdir /APP
+WORKDIR /APP
+
+EXPOSE 5000
+
+COPY requirements.txt .
 RUN pip install -r requirements.txt
 
-CMD ["gunicorn", "--workers", "4", "wsgi:application", "--bind", "0.0.0.0:80", "--log-syslog", "--log-level", "DEBUG"]
+COPY . .
+
+CMD [ "uwsgi", "--ini", "app.ini" ]

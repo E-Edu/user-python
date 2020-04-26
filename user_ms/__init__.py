@@ -22,7 +22,7 @@ db = SQLAlchemy()
 bcrypt = Bcrypt()
 mail = Mail()
 
-def init_app():
+def create_app():
     app = Flask(__name__)
 
     conf = os.environ.get("conf_mode")

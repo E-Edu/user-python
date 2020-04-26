@@ -1,2 +1,2 @@
-def send_verifying_email():
+def send_verifying_email(user):
     pass

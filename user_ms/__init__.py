@@ -22,6 +22,12 @@ db = SQLAlchemy()
 bcrypt = Bcrypt()
 mail = Mail()
 
+from user_ms.resources.create_user import CreateUser
+from user_ms.resources.set_user_info import SetUserInfo
+
+api.add_resource(CreateUser, "/user")
+api.add_resource(SetUserInfo, "/user")
+
 def create_app():
     app = Flask(__name__)
 
